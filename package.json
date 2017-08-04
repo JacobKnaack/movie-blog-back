@@ -1,0 +1,29 @@
+{
+  "name": "movie-blog-back",
+  "version": "1.0.0",
+  "description": "CMS for posting, fetching and updating reviews. built for a review blog",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "blog",
+    "cms"
+  ],
+  "author": "Jacob Knaack",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.4",
+    "express": "^4.15.3",
+    "http-errors": "^1.6.1",
+    "mongoose": "^4.11.5",
+    "morgan": "^1.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
