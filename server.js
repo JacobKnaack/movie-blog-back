@@ -20,7 +20,7 @@ mongoose.connect(mongoURI, {
 app.use(morgan('dev'));
 app.use(cors());
 
-app.use('./api', reviewRouter);
+app.use('/api', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(httpErrors(404, 'this route is not registered'));

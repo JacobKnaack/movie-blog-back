@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "keywords": [
     "blog",
@@ -24,6 +24,11 @@
     "morgan": "^1.8.2"
   },
   "devDependencies": {
-    "nodemon": "^1.11.0"
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "nodemon": "^1.11.0",
+    "superagent": "^3.5.2",
+    "superagent-promise-plugin": "^3.2.0",
+    "superagent-use": "^0.1.0"
   }
 }
