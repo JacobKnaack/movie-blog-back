@@ -44,6 +44,16 @@ reviewRouter.put('/review/:id', jsonParser, function(req, res) {
   }).catch(err => httpErrors(404, err.message));
 });
 
+reviewRouter.delete('/review/:id', function(req, res) {
+  Review.remove({_id: req.params.id})
+  .then(review => {
+    if (!review) {return httpErrors(404, 'no review found');}
+    res.status(204);
+    res.json(review);
+  })
+  .catch(err => httpErrors(404, err.message));
+});
+
 reviewRouter.removeAllReviews = () => {
   return Review.remove({});
 };

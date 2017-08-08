@@ -143,4 +143,39 @@ describe('testing the review rouer', () => {
       .catch(done);
     });
   });
+
+  describe('testing DELETE for api/review', () => {
+    let testReview = {
+      title: 'Delete me',
+      release: 2018
+    };
+
+    before((done) => {
+      Promise.all([
+        new Review(testReview).save()
+      ])
+      .then(review => {
+        this.tempReview = review[0];
+        done();
+      })
+      .catch(done);
+    });
+
+    after((done) => {
+      Promise.all([
+        reviewRouter.removeAllReviews()
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    it('should delete a review from the database', (done) => {
+      request.delete(`${baseURL}/review/${this.tempReview._id}`)
+        .then(res => {
+          expect(res.status).to.equal(204);
+          done();
+        })
+        .catch(done);
+    });
+  });
 });
