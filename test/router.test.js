@@ -5,9 +5,10 @@ process.env.MONGO_URI = process.env.mongoURI || 'mongodb://localhost/db';
 const expect = require('chai').expect;
 const request = require('superagent-use')(require('superagent'));
 const superPromise = require('superagent-promise-plugin');
+const fs = require('fs');
 
-const Review = require('../app/model/Review.js');
-const reviewRouter = require('../app/route/review-router.js');
+const Review = require('../src/model/Review.js');
+const reviewRouter = require('../src/route/review-router.js');
 
 const PORT = process.env.PORT || 3000;
 
@@ -39,6 +40,10 @@ describe('testing the review rouer', () => {
   });
 
   describe('testing POST for api/review', () => {
+    let imageData = {
+      data: './test/testAsset/abstract.jpeg',
+      fileType: 'jpeg'
+    };
 
     afterEach((done) => {
       Promise.all([
@@ -62,6 +67,21 @@ describe('testing the review rouer', () => {
       })
       .catch(done);
     });
+
+    it('should return a review with an added image', (done) => {
+      request.post(`${baseURL}/review`)
+      .send({
+        title: 'testReview4',
+        release: 2001,
+        image: imageData
+      })
+      .then(res => {
+        expect(res.status).to.equal(200);
+        expect(res.body.image.contentType).to.equal('image/jpeg');
+        done();
+      })
+      .catch(done);
+    });
   });
 
   describe('testing GET for api/review', () => {
@@ -73,11 +93,20 @@ describe('testing the review rouer', () => {
       title: 'another movie',
       release: 1990
     };
+    let testReview5 = {
+      title: 'image movie',
+      release: 2005,
+      image: {
+        data: fs.readFileSync('./test/testAsset/abstract.jpeg'),
+        contentType: 'image/jpeg'
+      }
+    };
 
     before((done) => {
       Promise.all([
         new Review(testReview1).save(),
-        new Review(testReview2).save()
+        new Review(testReview2).save(),
+        new Review(testReview5).save()
       ])
       .then(() => done())
       .catch(done);
@@ -95,7 +124,7 @@ describe('testing the review rouer', () => {
       request.get(`${baseURL}/review`)
       .then(res => {
         expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(2);
+        expect(res.body.length).to.equal(3);
         done();
       })
       .catch(done);

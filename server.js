@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const httpErrors = require('http-errors');
 mongoose.Promise = require('bluebird');
 
-const reviewRouter = require('./app/route/review-router.js');
+const reviewRouter = require('./src/route/review-router.js');
 
 var app = express();
 var port = process.env.PORT || 3000;

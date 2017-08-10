@@ -6,6 +6,7 @@ const  Schema = mongoose.Schema;
 const reviewSchema = new Schema({
   title:   { type: String, required: true, unique: true },
   release: { type: Number, required: true },
+  image:   { data: Buffer, contentType: String},
   jacob:   {
     title:   { type: String},
     content: { type: String}

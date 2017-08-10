@@ -1,6 +1,7 @@
 'use strict';
 
 const Router = require('express').Router;
+const fs = require('fs');
 const jsonParser = require('body-parser').json();
 const httpErrors = require('http-errors');
 
@@ -16,8 +17,17 @@ reviewRouter.get('/review', function (req, res, next) {
 });
 
 reviewRouter.post('/review', jsonParser, function (req, res) {
-  new Review(req.body).save()
-  .then( review => res.json(review) )
+  let partialReview = new Review;
+  if (req.body.image) {
+    partialReview.image.data = fs.readFileSync(req.body.image.data);
+    partialReview.image.contentType = `image/${req.body.image.fileType}`;
+  }
+  partialReview.title = req.body.title;
+  partialReview.release = req.body.release;
+  partialReview.save()
+  .then( review => {
+    res.json(review);
+  })
   .catch(err => httpErrors(400, err.message));
 });
 
