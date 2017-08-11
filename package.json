@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "heroku-start": "node server.js"
+  },
+  "engines": {
+    "node": "8.1.2"
   },
   "keywords": [
     "blog",
