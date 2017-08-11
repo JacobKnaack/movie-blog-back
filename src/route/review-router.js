@@ -11,7 +11,9 @@ const reviewRouter = module.exports = new Router();
 reviewRouter.get('/review', function (req, res, next) {
   Review.find({})
   .then(reviews => {
-    if(!reviews) {return next(httpErrors(404, 'no reviews found'));}
+    if(!reviews) {
+      return next(httpErrors(404, 'no reviews found'));
+    }
     res.json(reviews);
   }).catch(err => httpErrors(404, err.message));
 });
