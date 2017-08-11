@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
     "start": "nodemon server.js",
     "heroku-start": "nodemon server.js"
   },
