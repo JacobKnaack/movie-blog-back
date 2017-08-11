@@ -9,8 +9,8 @@ mongoose.Promise = require('bluebird');
 
 const reviewRouter = require('./src/route/review-router.js');
 
-var app = express();
-var port = process.env.PORT || 3000;
+const app = express();
+const port = process.env.PORT || 3000;
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/db';
 
 mongoose.connect(mongoURI, {
@@ -27,7 +27,7 @@ app.all('*', (req, res, next) => {
 });
 
 const server = app.listen(port, function () {
-  console.log('movie blog up and runnig on port: ', port);
+  console.log('movie-blog node server up and running on port: ', port);
 });
 
 server.isRunnning = true;
