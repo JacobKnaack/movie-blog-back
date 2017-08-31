@@ -16,7 +16,7 @@ const baseURL = `localhost:${PORT}/api`;
 const server = require('../server.js');
 request.use(superPromise);
 
-describe('testing the review rouer', () => {
+describe('testing the review router', () => {
   before((done) => {
     if (!server.isRunning) {
       server.listen(PORT, () => {
