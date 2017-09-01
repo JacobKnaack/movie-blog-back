@@ -120,4 +120,86 @@ describe('testing the review router', () => {
       .catch(done);
     });
   });
+
+  describe('testing PUT for api/review', () => {
+    let testReview = {
+      movieId: 12731298736,
+      submissions: [{
+        title: 'test review',
+        author: 'test author',
+        content: 'text content'
+      }]
+    };
+
+    before(done => {
+      Promise.all([
+        new Review(testReview).save()
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    afterEach((done) => {
+      Promise.all([
+        reviewRouter.removeAllReviews()
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    it('should return a review with added content', (done) => {
+      request.put(`${baseURL}/review/${testReview.movieId}`)
+      .send({
+        title: 'different things',
+        author: 'new author',
+        content: 'more reviews!'
+      })
+      .then(res => {
+        expect(res.status).to.equal(200);
+        expect(res.body.submissions.length).to.equal(2);
+        done();
+      })
+      .catch(done);
+    });
+  });
+
+  describe('testing DELETE for api/review', () => {
+    let testReview = {
+      movieId: 12731298736,
+      submissions: [{
+        title: 'test review',
+        author: 'test author',
+        content: 'text content'
+      }, {
+        title: 'anothrer',
+        author: 'different author',
+        content: 'test content'
+      }]
+    };
+
+    before((done) => {
+      Promise.all([
+        new Review(testReview).save()
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    afterEach(done => {
+      Promise.all([
+        reviewRouter.removeAllReviews()
+      ])
+      .then(() => done())
+      .catch(done);
+    });
+
+    it('should remove a review', (done) => {
+      request.delete(`${baseURL}/review/${testReview.movieId}/${testReview.submissions[1].author}`)
+      .then(res => {
+        expect(res.status).to.equal(204);
+        done();
+      })
+      .catch(done);
+    });
+  });
 });

@@ -37,33 +37,27 @@ reviewRouter.post('/review', jsonParser, function (req, res) {
 
 reviewRouter.put('/review/:movieid', jsonParser, function(req, res) {
   if (JSON.stringify(req.body) === '{}') return httpErrors(400, 'no body provided');
-  Review.findOne({_id: req.params.id})
+  Review.findOne({movieId: req.params.movieid})
   .then(review => {
-    if(req.body.jacob) {
-      review.jacob.title = req.body.jacob.title;
-      review.jacob.content = req.body.jacob.content;
-      review.save();
-      res.json(review);
-    } else if (req.body.ivan) {
-      review.ivan.title = req.body.ivan.title;
-      review.ivan.content = req.body.ivan.content;
-      review.save();
-      res.json(review);
-    } else if (req.body.megan) {
-      review.megan.title = req.body.megan.title;
-      review.megan.content = req.body.megan.content;
-      review.save();
-      res.json(review);
-    }
+    review.submissions.push(req.body);
+    review.save();
+    res.json(review);
   }).catch(err => httpErrors(404, err.message));
 });
 
-reviewRouter.delete('/review/:id', function(req, res) {
-  Review.remove({_id: req.params.id})
-  .then(review => {
-    if (!review) {return httpErrors(404, 'no review found');}
+//delete review by author
+reviewRouter.delete('/review/:movieid/:author', function(req, res) {
+  Review.findOne({movieId: req.params.movieid})
+  .then(reviews => {
+    if (!reviews) {return httpErrors(404, 'no review found');}
+    for (var i = 0; i < reviews.submissions.length; i ++) {
+      if (reviews.submissions[i].author === req.params.author) {
+        reviews.submissions.splice(i, 1);
+      }
+    }
+    reviews.save();
     res.status(204);
-    res.json(review);
+    res.json(reviews);
   })
   .catch(err => httpErrors(404, err.message));
 });
