@@ -1,7 +1,6 @@
 'use strict';
 
 const Router = require('express').Router;
-// const fs = require('fs');
 const jsonParser = require('body-parser').json();
 const httpErrors = require('http-errors');
 
@@ -18,7 +17,6 @@ reviewRouter.get('/reviews', function (req, res, next) {
   }).catch(err => httpErrors(404, err.message));
 });
 
-//Untested route for reviews by movie ID
 reviewRouter.get('/review/:movieId', function (req, res, next) {
   Review.find({movieId: req.params.movieId})
   .then(review => {
