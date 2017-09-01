@@ -8,7 +8,7 @@ const httpErrors = require('http-errors');
 const Review = require('../model/Review.js');
 const reviewRouter = module.exports = new Router();
 
-reviewRouter.get('/review', function (req, res, next) {
+reviewRouter.get('/reviews', function (req, res, next) {
   Review.find({})
   .then(reviews => {
     if(!reviews) {
@@ -18,40 +18,24 @@ reviewRouter.get('/review', function (req, res, next) {
   }).catch(err => httpErrors(404, err.message));
 });
 
-//Untested route for all reviews by movie ID
-reviewRouter.get('/reviews/:movieId', function (req, res, next) {
-  Review.find(req.params.movieId)
-  .then(reviews => {
-    if(!reviews) {
+//Untested route for reviews by movie ID
+reviewRouter.get('/review/:movieId', function (req, res, next) {
+  Review.find({movieId: req.params.movieId})
+  .then(review => {
+    if(!review) {
       return next(httpErrors(404, 'no reviews for that id'));
-    } res.json();
+    }
+    res.json(review[0]);
   }).catch(err => httpErrors(404, err.message));
 });
 
-// reviewRouter.post('/review', jsonParser, function (req, res) {
-//   let partialReview = new Review;
-//   if (req.body.image) {
-//     partialReview.image.data = fs.readFileSync(req.body.image.data);
-//     partialReview.image.contentType = `image/${req.body.image.fileType}`;
-//   }
-//   partialReview.title = req.body.title;
-//   partialReview.release = req.body.release;
-//   partialReview.save()
-//   .then( review => {
-//     res.json(review);
-//   })
-//   .catch(err => httpErrors(400, err.message));
-// });
-
 reviewRouter.post('/review', jsonParser, function (req, res) {
-  let reviewArray = new Review;
-  reviewArray.submissions.push(req.body);
-  reviewArray.save()
+  new Review(req.body).save()
   .then(review => res.json(review))
   .catch(err => httpErrors(400, err.message));
 });
 
-reviewRouter.put('/review/:id', jsonParser, function(req, res) {
+reviewRouter.put('/review/:movieid', jsonParser, function(req, res) {
   if (JSON.stringify(req.body) === '{}') return httpErrors(400, 'no body provided');
   Review.findOne({_id: req.params.id})
   .then(review => {

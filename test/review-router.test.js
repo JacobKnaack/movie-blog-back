@@ -5,7 +5,6 @@ process.env.MONGO_URI = process.env.mongoURI || 'mongodb://localhost/db';
 const expect = require('chai').expect;
 const request = require('superagent-use')(require('superagent'));
 const superPromise = require('superagent-promise-plugin');
-// const fs = require('fs');
 
 const Review = require('../src/model/Review.js');
 const reviewRouter = require('../src/route/review-router.js');
@@ -40,15 +39,9 @@ describe('testing the review router', () => {
   });
 
   describe('testing POST for api/review', () => {
-    let testReview = {
-      'title': 'test review',
-      'author': 'test author',
-      'content': 'test content'
-    };
-
     afterEach((done) => {
       Promise.all([
-        reviewRouter.removeAllReviews()
+        reviewRouter.removeAllReviews(),
       ])
       .then(() => done())
       .catch(done);
@@ -56,7 +49,14 @@ describe('testing the review router', () => {
 
     it('should return a review with a title and author', (done) => {
       request.post(`${baseURL}/review`)
-      .send(testReview)
+      .send({
+        movieId: 127635876325,
+        submissions: [{
+          title: 'test review',
+          author: 'test author',
+          content: 'test content'
+        }]
+      })
       .then(res => {
         expect(res.status).to.equal(200);
         expect(res.body.submissions[0].title).to.equal('test review');
@@ -68,24 +68,35 @@ describe('testing the review router', () => {
   });
 
   describe('testing GET for api/review', () => {
-    let testReviews = {
-      'submissions': [
+    let testReview1 = {
+      movieId: 72837379,
+      submissions: [{
+        title: 'something',
+        author: 'someone',
+        content: 'stuffs'
+      }]
+    };
+
+    let testReview2 = {
+      movieId: 36478293,
+      submissions: [
         {
-          'title': 'something',
-          'author': 'someone',
-          'content': 'stuffs'
+          title: 'more stuff',
+          author: 'a dude',
+          content: 'asdjfhasdjhf'
         },
         {
-          'title': 'something',
-          'author': 'someone',
-          'content': 'stuffs'
-        },
+          title: 'stuff',
+          author: 'another dude',
+          content: 'aasdkfjhsdjhf'
+        }
       ]
     };
 
     before((done) => {
       Promise.all([
-        new Review(testReviews).save(),
+        new Review(testReview1).save(),
+        new Review(testReview2).save()
       ])
       .then(() => done())
       .catch(done);
@@ -100,9 +111,10 @@ describe('testing the review router', () => {
     });
 
     it('should return all reviews', (done) => {
-      request.get(`${baseURL}/review`)
+      request.get(`${baseURL}/review/36478293`)
       .then(res => {
         expect(res.status).to.equal(200);
+        expect(res.body.submissions.length).to.equal(2);
         done();
       })
       .catch(done);
