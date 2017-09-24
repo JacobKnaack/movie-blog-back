@@ -2,11 +2,11 @@
   "name": "movie-blog-back",
   "version": "1.0.0",
   "description": "CMS for posting, fetching and updating reviews. built for a review blog",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
-    "start": "nodemon server.js",
-    "heroku-start": "node server.js"
+    "start": "nodemon index.js",
+    "heroku-start": "node index.js"
   },
   "engines": {
     "node": "8.1.2"
@@ -18,17 +18,22 @@
   "author": "Jacob Knaack",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
     "express": "^4.15.3",
     "gridfs-stream": "^1.1.1",
     "http-errors": "^1.6.1",
+    "jsonwebtoken": "^8.0.1",
     "mongoose": "^4.11.5",
     "morgan": "^1.8.2"
   },
   "devDependencies": {
     "chai": "^4.1.1",
+    "expect": "^21.1.0",
+    "faker": "^4.1.0",
     "mocha": "^3.5.0",
     "nodemon": "^1.11.0",
     "superagent": "^3.5.2",
