@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
     "start": "nodemon index.js",
+    "test": "mocha",
     "heroku-start": "node index.js"
   },
   "engines": {
@@ -28,7 +29,8 @@
     "http-errors": "^1.6.1",
     "jsonwebtoken": "^8.0.1",
     "mongoose": "^4.11.5",
-    "morgan": "^1.8.2"
+    "morgan": "^1.8.2",
+    "universalify": "^0.1.1"
   },
   "devDependencies": {
     "chai": "^4.1.1",

@@ -5,9 +5,10 @@ const jsonParser = require('body-parser').json();
 const httpErrors = require('http-errors');
 
 const Movie = require('../model/Movie.js');
-const movieRouter = module.exports = new Router();
+const bearerAuth = require('../lib/bearer-auth-middleware');
 
-movieRouter.get('/movies', function(req, res, next) {
+const movieRouter = module.exports = new Router();
+movieRouter.get('/movies', bearerAuth, function(req, res, next) {
   Movie.find({})
     .then(movies => {
       if(!movies) {
@@ -17,7 +18,7 @@ movieRouter.get('/movies', function(req, res, next) {
     }).catch(err => httpErrors(404, err.message));
 });
 
-movieRouter.post('/movie', jsonParser, function(req, res) {
+movieRouter.post('/movie', jsonParser, bearerAuth, function(req, res) {
   new Movie(req.body).save()
     .then(movie => res.json(movie))
     .catch(err => httpErrors(400, err.message));
