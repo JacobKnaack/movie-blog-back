@@ -8,9 +8,10 @@ const superPromise = require('superagent-promise-plugin');
 
 const Review = require('../src/model/Review.js');
 const reviewRouter = require('../src/route/review-router.js');
+const cleanDB = require('./lib/clean-db.js');
+const mockUser = require('./lib/mock-user.js');
 
 const PORT = process.env.PORT || 3000;
-
 const baseURL = `localhost:${PORT}/api`;
 const server = require('../src/server.js');
 request.use(superPromise);
@@ -18,8 +19,18 @@ request.use(superPromise);
 describe('testing the review router', () => {
   before(server.start);
   after(server.stop);
+  afterEach(cleanDB);
 
   describe('testing POST for api/review', () => {
+    let tempUserData;
+
+    before(() => {
+      return mockUser.createOne()
+        .then(userData => {
+          tempUserData = userData;
+        });
+    });
+
     afterEach((done) => {
       Promise.all([
         reviewRouter.removeAllReviews(),
@@ -30,6 +41,7 @@ describe('testing the review router', () => {
 
     it('should return a review with a title and author', (done) => {
       request.post(`${baseURL}/review`)
+        .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: 127635876325,
           submissions: [{
@@ -49,6 +61,7 @@ describe('testing the review router', () => {
   });
 
   describe('testing GET for api/review', () => {
+    let tempUserData;
     let testReview1 = {
       movieId: 72837379,
       submissions: [{
@@ -77,9 +90,13 @@ describe('testing the review router', () => {
     before((done) => {
       Promise.all([
         new Review(testReview1).save(),
-        new Review(testReview2).save()
+        new Review(testReview2).save(),
+        mockUser.createOne()
       ])
-        .then(() => done())
+        .then(promiseData => {
+          tempUserData = promiseData[2];
+          done();
+        })
         .catch(done);
     });
 
@@ -93,6 +110,7 @@ describe('testing the review router', () => {
 
     it('should return all reviews', (done) => {
       request.get(`${baseURL}/review/36478293`)
+        .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.submissions.length).to.equal(2);
@@ -103,6 +121,7 @@ describe('testing the review router', () => {
   });
 
   describe('testing PUT for api/review', () => {
+    let tempUserData;
     let testReview = {
       movieId: 12731298736,
       submissions: [{
@@ -114,9 +133,13 @@ describe('testing the review router', () => {
 
     before(done => {
       Promise.all([
-        new Review(testReview).save()
+        new Review(testReview).save(),
+        mockUser.createOne()
       ])
-        .then(() => done())
+        .then(promiseData => {
+          tempUserData = promiseData[1];
+          done();
+        })
         .catch(done);
     });
 
@@ -130,6 +153,7 @@ describe('testing the review router', () => {
 
     it('should return a review with added content', (done) => {
       request.put(`${baseURL}/review/${testReview.movieId}`)
+        .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           title: 'different things',
           author: 'new author',
@@ -145,6 +169,7 @@ describe('testing the review router', () => {
   });
 
   describe('testing DELETE for api/review', () => {
+    let tempUserData;
     let testReview = {
       movieId: 12731298736,
       submissions: [{
@@ -160,9 +185,13 @@ describe('testing the review router', () => {
 
     before((done) => {
       Promise.all([
-        new Review(testReview).save()
+        new Review(testReview).save(),
+        mockUser.createOne()
       ])
-        .then(() => done())
+        .then(promiseData => {
+          tempUserData = promiseData[1];
+          done();
+        })
         .catch(done);
     });
 
@@ -176,6 +205,7 @@ describe('testing the review router', () => {
 
     it('should remove a review', (done) => {
       request.delete(`${baseURL}/review/${testReview.movieId}/${testReview.submissions[1].author}`)
+        .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(204);
           done();

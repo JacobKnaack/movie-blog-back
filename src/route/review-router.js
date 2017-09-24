@@ -5,9 +5,11 @@ const jsonParser = require('body-parser').json();
 const httpErrors = require('http-errors');
 
 const Review = require('../model/Review.js');
-const reviewRouter = module.exports = new Router();
+const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
-reviewRouter.get('/reviews', function (req, res, next) {
+const reviewRouter = module.exports = new Router();
+// fetch all saved reviews
+reviewRouter.get('/reviews', bearerAuth, function (req, res, next) {
   Review.find({})
     .then(reviews => {
       if(!reviews) {
@@ -17,7 +19,8 @@ reviewRouter.get('/reviews', function (req, res, next) {
     }).catch(err => httpErrors(404, err.message));
 });
 
-reviewRouter.get('/review/:movieId', function (req, res, next) {
+// find review model by movie id
+reviewRouter.get('/review/:movieId', bearerAuth, function (req, res, next) {
   Review.find({movieId: req.params.movieId})
     .then(review => {
       if(!review) {
@@ -27,13 +30,13 @@ reviewRouter.get('/review/:movieId', function (req, res, next) {
     }).catch(err => httpErrors(404, err.message));
 });
 
-reviewRouter.post('/review', jsonParser, function (req, res) {
+reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
   new Review(req.body).save()
     .then(review => res.json(review))
     .catch(err => httpErrors(400, err.message));
 });
 
-reviewRouter.put('/review/:movieid', jsonParser, function(req, res) {
+reviewRouter.put('/review/:movieid', jsonParser, bearerAuth, function(req, res) {
   if (JSON.stringify(req.body) === '{}') return httpErrors(400, 'no body provided');
   Review.findOne({movieId: req.params.movieid})
     .then(review => {
@@ -44,7 +47,7 @@ reviewRouter.put('/review/:movieid', jsonParser, function(req, res) {
 });
 
 //delete review by author
-reviewRouter.delete('/review/:movieid/:author', function(req, res) {
+reviewRouter.delete('/review/:movieid/:author', bearerAuth, function(req, res) {
   Review.findOne({movieId: req.params.movieid})
     .then(reviews => {
       if (!reviews) {return httpErrors(404, 'no review found');}
