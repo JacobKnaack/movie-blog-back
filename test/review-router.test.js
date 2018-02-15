@@ -44,16 +44,14 @@ describe('testing the review router', () => {
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: 127635876325,
-          submissions: [{
-            title: 'test review',
-            author: 'test author',
-            content: 'test content'
-          }]
+          title: 'test review',
+          author: 'test author',
+          markdown: 'test content'
         })
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.submissions[0].title).to.equal('test review');
-          expect(res.body.submissions[0].author).to.equal('test author');
+          expect(res.body.title).to.equal('test review');
+          expect(res.body.author).to.equal('test author');
           done();
         })
         .catch(done);
@@ -63,28 +61,17 @@ describe('testing the review router', () => {
   describe('testing GET for api/review', () => {
     let tempUserData;
     let testReview1 = {
-      movieId: 72837379,
-      submissions: [{
-        title: 'something',
-        author: 'someone',
-        content: 'stuffs'
-      }]
+      movieId: 4567382736,
+      title: 'something',
+      author: 'someone',
+      makrdown: 'stuffs'
     };
 
     let testReview2 = {
-      movieId: 36478293,
-      submissions: [
-        {
-          title: 'more stuff',
-          author: 'a dude',
-          content: 'asdjfhasdjhf'
-        },
-        {
-          title: 'stuff',
-          author: 'another dude',
-          content: 'aasdkfjhsdjhf'
-        }
-      ]
+      movieId: 4567382736,
+      title: 'stuff',
+      author: 'another dude',
+      markdown: 'aasdkfjhsdjhf'
     };
 
     before((done) => {
@@ -108,12 +95,12 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return all reviews', (done) => {
-      request.get(`${baseURL}/review/36478293`)
+    it('should return all reviews by movieId', (done) => {
+      request.get(`${baseURL}/reviews/4567382736`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.submissions.length).to.equal(2);
+          expect(res.body.length).to.equal(2);
           done();
         })
         .catch(done);
@@ -121,14 +108,12 @@ describe('testing the review router', () => {
   });
 
   describe('testing PUT for api/review', () => {
-    let tempUserData;
+    let tempUserData, tempReviewData;
     let testReview = {
       movieId: 12731298736,
-      submissions: [{
-        title: 'test review',
-        author: 'test author',
-        content: 'text content'
-      }]
+      title: 'test review',
+      author: 'test author',
+      markdown: 'text content'
     };
 
     before(done => {
@@ -137,6 +122,7 @@ describe('testing the review router', () => {
         mockUser.createOne()
       ])
         .then(promiseData => {
+          tempReviewData = promiseData[0];
           tempUserData = promiseData[1];
           done();
         })
@@ -151,17 +137,17 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return a review with added content', (done) => {
-      request.put(`${baseURL}/review/${testReview.movieId}`)
+    it('should return a review with updated content', (done) => {
+      request.put(`${baseURL}/review/${tempReviewData._id}`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           title: 'different things',
-          author: 'new author',
-          content: 'more reviews!'
+          author: 'Perhaps a name change',
+          markdown: 'I\'ve changed things!'
         })
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.submissions.length).to.equal(2);
+          expect(res.body.title).to.equal('different things');
           done();
         })
         .catch(done);
@@ -169,18 +155,12 @@ describe('testing the review router', () => {
   });
 
   describe('testing DELETE for api/review', () => {
-    let tempUserData;
+    let tempUserData, tempReviewData;
     let testReview = {
       movieId: 12731298736,
-      submissions: [{
-        title: 'test review',
-        author: 'test author',
-        content: 'text content'
-      }, {
-        title: 'anothrer',
-        author: 'different author',
-        content: 'test content'
-      }]
+      title: 'anothrer',
+      author: 'different author',
+      content: 'test content'
     };
 
     before((done) => {
@@ -189,6 +169,7 @@ describe('testing the review router', () => {
         mockUser.createOne()
       ])
         .then(promiseData => {
+          tempReviewData = promiseData[0];
           tempUserData = promiseData[1];
           done();
         })
@@ -204,7 +185,7 @@ describe('testing the review router', () => {
     });
 
     it('should remove a review', (done) => {
-      request.delete(`${baseURL}/review/${testReview.movieId}/${testReview.submissions[1].author}`)
+      request.delete(`${baseURL}/review/${tempReviewData._id}`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(204);
