@@ -9,7 +9,7 @@ const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
 const reviewRouter = module.exports = new Router();
 // fetch all saved reviews
-reviewRouter.get('/reviews', bearerAuth, function (req, res, next) {
+reviewRouter.get('/reviews', function (req, res, next) {
   Review.find({})
     .then(reviews => {
       if(!reviews) {
@@ -20,7 +20,7 @@ reviewRouter.get('/reviews', bearerAuth, function (req, res, next) {
 });
 
 // find review model by movie id
-reviewRouter.get('/reviews/:movieId', bearerAuth, function (req, res, next) {
+reviewRouter.get('/reviews/:movieId', function (req, res, next) {
   Review.find({movieId: req.params.movieId})
     .then(reviews => {
       if(!reviews) {

@@ -97,7 +97,6 @@ describe('testing the review router', () => {
 
     it('should return all reviews by movieId', (done) => {
       request.get(`${baseURL}/reviews/4567382736`)
-        .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);

@@ -53,7 +53,7 @@ describe('testing the movie router', () => {
     });
   });
 
-  describe('testing GET for api/movie', () => {
+  describe('testing GET for api/movie, no auth required', () => {
     let testMovie={ name: 'test movie2', release: new Date() };
     let tempUserData;
 
@@ -79,7 +79,6 @@ describe('testing the movie router', () => {
 
     it('should return a movie', (done) => {
       request.get(`${baseURL}/movies`)
-        .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(1);
