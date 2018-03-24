@@ -20,9 +20,14 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
 });
 
 authRouter.get('/login', basicAuth, (req, res, next) => {
-  console.log('hit /api/login');
+  console.log('hit /api/login', req.user);
 
   req.user.tokenCreate()
-    .then(token => res.send(token))
+    .then(token => {
+      res.send({ 
+        author: req.user,
+        accessToken: token,
+      })
+    })
     .catch(next);
 });

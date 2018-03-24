@@ -39,19 +39,20 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return a review with a title and author', (done) => {
+    it('should return a review with a title and author and markdown', (done) => {
       request.post(`${baseURL}/review`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: 127635876325,
           title: 'test review',
           author: 'test author',
-          markdown: 'test content'
+          markdown: 'What a great experience, I loved this movie so much!!'
         })
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.title).to.equal('test review');
           expect(res.body.author).to.equal('test author');
+          expect(res.body.markdown).to.equal('What a great experience, I loved this movie so much!!');
           done();
         })
         .catch(done);
@@ -64,7 +65,7 @@ describe('testing the review router', () => {
       movieId: 4567382736,
       title: 'something',
       author: 'someone',
-      makrdown: 'stuffs'
+      markdown: 'stuffs'
     };
 
     let testReview2 = {
@@ -95,7 +96,7 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return all reviews by movieId', (done) => {
+    it('should return all reviews by movieId, no auth required', (done) => {
       request.get(`${baseURL}/reviews/4567382736`)
         .then(res => {
           expect(res.status).to.equal(200);

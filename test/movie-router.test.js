@@ -22,7 +22,7 @@ describe('testing the movie router', () => {
   afterEach(cleanDB);
 
   describe('testing POST for api/movie', () => {
-    let testMovie = { 'name': 'test movie1', 'release': new Date() };
+    let testMovie = { name: 'test movie1', release: new Date() };
     let tempUserData;
 
     before(() => {

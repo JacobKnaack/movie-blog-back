@@ -34,7 +34,7 @@ describe('testing auth router', () => {
   });
 
   describe('testing GET /api/login', () => {
-    it('should respond with a token', () => {
+    it('should respond with a user and a token token', () => {
       let tempUser;
       return mockUser.createOne()
         .then(userData => {
@@ -45,9 +45,9 @@ describe('testing auth router', () => {
             .set('Authorization', `Basic ${encoded}`);
         })
         .then(res => {
-          console.log('token we go back ', res.text);
+          console.log('response body ', res.body);
           expect(res.status).toEqual(200);
-          expect(res.text.length > 1).toBeTruthy();
+          expect(res.body.author.username).toEqual(tempUser.username);
         });
     });
   });
