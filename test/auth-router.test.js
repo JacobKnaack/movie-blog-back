@@ -45,7 +45,6 @@ describe('testing auth router', () => {
             .set('Authorization', `Basic ${encoded}`);
         })
         .then(res => {
-          console.log('response body ', res.body);
           expect(res.status).toEqual(200);
           expect(res.body.author.username).toEqual(tempUser.username);
         });
