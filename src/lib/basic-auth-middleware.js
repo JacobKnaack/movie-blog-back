@@ -1,6 +1,7 @@
 'use strict';
 
 const Author = require('../model/Author.js');
+const httpErrors = require('http-errors')
 
 // basic auth middleware for login route
 // find a user in db and compare the password
@@ -23,14 +24,8 @@ module.exports = (req, res, next) => {
   if(!username || !password)
     return next(new Error('unauthorized username or password was missing'));
 
-  console.log('decoded', decoded);
-  console.log('username', username);
-  console.log('password', password);
-
   Author.findOne({username})
     .then(user => {
-      if(!user)
-        return next(new Error('unauthorized user does not exist'));
       return user.passwordHashCompare(password);
     })
     .then(user => {
@@ -39,7 +34,7 @@ module.exports = (req, res, next) => {
     })
     .catch(err => {
       console.log('errrrrrrr', err);
-      next(new Error('unauthorized find one failed in basic auth middleware'));
+      return next(httpErrors(401, 'this username is not registered'));
     });
 
 };
