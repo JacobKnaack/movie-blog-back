@@ -22,7 +22,7 @@ describe('testing the movie router', () => {
   afterEach(cleanDB);
 
   describe('testing POST for api/movie', () => {
-    let testMovie = { name: 'test movie1', release: new Date() };
+    let testMovie = { name: 'test movie1', release: new Date(), image_path: 'an/image/path' };
     let tempUserData;
 
     before(() => {
@@ -47,6 +47,7 @@ describe('testing the movie router', () => {
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal('test movie1');
+          expect(res.body.image_path).to.equal('an/image/path');
           done();
         })
         .catch(done);
@@ -54,7 +55,7 @@ describe('testing the movie router', () => {
   });
 
   describe('testing GET for api/movie, no auth required', () => {
-    let testMovie={ name: 'test movie2', release: new Date() };
+    let testMovie={ name: 'test movie2', release: new Date(), image_path: 'another/path' };
     let tempUserData;
 
     before((done) => {

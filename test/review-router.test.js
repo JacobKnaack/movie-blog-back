@@ -39,20 +39,20 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return a review with a title and author and markdown', (done) => {
+    it('should return a review with a title and author and html', (done) => {
       request.post(`${baseURL}/review`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: 127635876325,
           title: 'test review',
           author: 'test author',
-          markdown: 'What a great experience, I loved this movie so much!!'
+          html: 'What a great experience, I loved this movie so much!!'
         })
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.title).to.equal('test review');
           expect(res.body.author).to.equal('test author');
-          expect(res.body.markdown).to.equal('What a great experience, I loved this movie so much!!');
+          expect(res.body.html).to.equal('What a great experience, I loved this movie so much!!');
           done();
         })
         .catch(done);
@@ -65,14 +65,14 @@ describe('testing the review router', () => {
       movieId: 4567382736,
       title: 'something',
       author: 'someone',
-      markdown: 'stuffs'
+      html: 'stuffs'
     };
 
     let testReview2 = {
       movieId: 4567382736,
       title: 'stuff',
       author: 'another dude',
-      markdown: 'aasdkfjhsdjhf'
+      html: 'aasdkfjhsdjhf'
     };
 
     before((done) => {
@@ -113,7 +113,7 @@ describe('testing the review router', () => {
       movieId: 12731298736,
       title: 'test review',
       author: 'test author',
-      markdown: 'text content'
+      html: 'text content'
     };
 
     before(done => {
@@ -143,7 +143,7 @@ describe('testing the review router', () => {
         .send({
           title: 'different things',
           author: 'Perhaps a name change',
-          markdown: 'I\'ve changed things!'
+          html: 'I\'ve changed things!'
         })
         .then(res => {
           expect(res.status).to.equal(200);

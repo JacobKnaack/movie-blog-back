@@ -46,8 +46,8 @@ reviewRouter.put('/review/:id', jsonParser, bearerAuth, function(req, res) {
       if (req.body.author) {
         review.author = req.body.author;
       }
-      if (req.body.markdown) {
-        review.markdown = req.body.markdown;
+      if (req.body.html) {
+        review.html = req.body.html;
       }
       review.save();
       res.json(review);
