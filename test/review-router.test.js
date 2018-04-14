@@ -79,21 +79,31 @@ describe('testing the review router', () => {
       created_on: new Date(),
       updated_on: new Date(),
     };
+    
+    let testReview3 = {
+      movieId: 81723969871,
+      title:'third',
+      author: 'third',
+      html: '<p>this movie is great</p>',
+      created_on: new Date(),
+      updated_on: new Date,
+    }
 
     before((done) => {
       Promise.all([
         new Review(testReview1).save(),
         new Review(testReview2).save(),
+        new Review(testReview3).save(),
         mockUser.createOne()
       ])
         .then(promiseData => {
-          tempUserData = promiseData[2];
+          tempUserData = promiseData[3];
           done();
         })
         .catch(done);
     });
 
-    afterEach((done) => {
+    after((done) => {
       Promise.all([
         reviewRouter.removeAllReviews()
       ])
@@ -101,9 +111,20 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
+    it('should return all reviews, no auth requred', (done) => {
+      request.get(`${baseURL}/reviews`)
+      .then(res => {
+        expect(res.status).to.equal(200);
+        expect(res.body.length).to.equal(3);
+        done();
+      })
+      .catch(done);
+    })
+
     it('should return all reviews by movieId, no auth required', (done) => {
       request.get(`${baseURL}/reviews/4567382736`)
         .then(res => {
+          console.log(res.body);
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
           done();
