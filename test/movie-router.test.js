@@ -22,7 +22,11 @@ describe('testing the movie router', () => {
   afterEach(cleanDB);
 
   describe('testing POST for api/movie', () => {
-    let testMovie = { name: 'test movie1', release: new Date(), image_path: 'an/image/path' };
+    let testMovie = { 
+      name: 'test movie1',
+      release: new Date(),
+      image_path: 'an/image/path',
+    };
     let tempUserData;
 
     before(() => {
@@ -55,7 +59,13 @@ describe('testing the movie router', () => {
   });
 
   describe('testing GET for api/movie, no auth required', () => {
-    let testMovie={ name: 'test movie2', release: new Date(), image_path: 'another/path' };
+    let testMovie={
+      name: 'test movie2',
+      release: new Date(),
+      image_path: 'another/path',
+      created_on: new Date(),
+      updated_on: new Date(),
+    };
     let tempUserData;
 
     before((done) => {

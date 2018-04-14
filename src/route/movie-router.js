@@ -19,7 +19,13 @@ movieRouter.get('/movies', function(req, res, next) {
 });
 
 movieRouter.post('/movie', jsonParser, bearerAuth, function(req, res) {
-  new Movie(req.body).save()
+  new Movie({
+    name: req.body.name,
+    release: req.body.release,
+    image_path: req.body.image_path,
+    created_on: new Date(),
+    updated_on: new Date(),
+  }).save()
     .then(movie => res.json(movie))
     .catch(err => httpErrors(400, err.message));
 });
