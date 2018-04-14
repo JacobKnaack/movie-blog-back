@@ -64,7 +64,6 @@ describe('testing the movie router', () => {
       release: new Date(),
       image_path: 'another/path',
       created_on: new Date(),
-      updated_on: new Date(),
     };
     let tempUserData;
 

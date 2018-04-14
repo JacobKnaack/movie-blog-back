@@ -31,7 +31,14 @@ reviewRouter.get('/reviews/:movieId', function (req, res, next) {
 });
 
 reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
-  new Review(req.body).save()
+  new Review({
+    movieId: req.body.movieId,
+    author: req.body.author,
+    title: req.body.title,
+    html: req.body.html,
+    created_on: new Date(),
+    updated_on: new Date(),
+  }).save()
     .then(review => res.json(review))
     .catch(err => httpErrors(400, err.message));
 });

@@ -8,7 +8,6 @@ const movieSchema = new Schema({
   release: {type: Date, required: true},
   image_path: {type: String, required: true },
   created_on: {type: Date, required: true},
-  updated_on: {type: Date, required: true},
 });
 
 module.exports = mongoose.model('Movie', movieSchema);

@@ -53,6 +53,7 @@ describe('testing the review router', () => {
           expect(res.body.title).to.equal('test review');
           expect(res.body.author).to.equal('test author');
           expect(res.body.html).to.equal('What a great experience, I loved this movie so much!!');
+          expect(res.body.created_on).to.exist;
           done();
         })
         .catch(done);
@@ -65,14 +66,18 @@ describe('testing the review router', () => {
       movieId: 4567382736,
       title: 'something',
       author: 'someone',
-      html: 'stuffs'
+      html: 'stuffs',
+      created_on: new Date(),
+      updated_on: new Date,
     };
 
     let testReview2 = {
       movieId: 4567382736,
       title: 'stuff',
       author: 'another dude',
-      html: 'aasdkfjhsdjhf'
+      html: 'aasdkfjhsdjhf',
+      created_on: new Date(),
+      updated_on: new Date(),
     };
 
     before((done) => {
@@ -113,7 +118,9 @@ describe('testing the review router', () => {
       movieId: 12731298736,
       title: 'test review',
       author: 'test author',
-      html: 'text content'
+      html: 'text content',
+      created_on: new Date(),
+      updated_on: new Date(),
     };
 
     before(done => {
@@ -160,7 +167,9 @@ describe('testing the review router', () => {
       movieId: 12731298736,
       title: 'anothrer',
       author: 'different author',
-      content: 'test content'
+      content: 'test content',
+      created_on: new Date(),
+      updated_on: new Date(),
     };
 
     before((done) => {
