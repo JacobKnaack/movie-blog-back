@@ -65,7 +65,7 @@ describe('testing the movie router', () => {
       image_path: 'another/path',
       created_on: new Date(),
     };
-    let tempUserData;
+    let tempUserData, tempMovieData;
 
     before((done) => {
       Promise.all([
@@ -73,13 +73,14 @@ describe('testing the movie router', () => {
         mockUser.createOne()
       ])
         .then(promiseData => {
+          tempMovieData = promiseData[0];
           tempUserData = promiseData[1];
           done();
         })
         .catch(done);
     });
 
-    afterEach((done) => {
+    after((done) => {
       Promise.all([
         movieRouter.removeAllMovies()
       ])
@@ -87,12 +88,22 @@ describe('testing the movie router', () => {
         .catch(done);
     });
 
-    it('should return a movie', (done) => {
+    it('should return all movies', (done) => {
       request.get(`${baseURL}/movies`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(1);
           expect(res.body[0].name).to.equal('test movie2');
+          done();
+        })
+        .catch(done);
+    });
+
+    it('should return a movie by id', (done) => {
+      request.get(`${baseURL}/movie/${tempMovieData._id}`)
+        .then(res => {
+          expect(res.status).to.equal(200);
+          expect(res.body._id).to.equal(tempMovieData._id.toString());
           done();
         })
         .catch(done);

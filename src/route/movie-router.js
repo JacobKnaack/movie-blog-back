@@ -12,10 +12,20 @@ movieRouter.get('/movies', function(req, res, next) {
   Movie.find({})
     .then(movies => {
       if(!movies) {
-        return next(httpErrors(404, 'no reviews found'));
+        return next(httpErrors(404, 'no moviess found'));
       }
-      res.json(movies);
+      return res.json(movies);
     }).catch(err => httpErrors(404, err.message));
+});
+
+movieRouter.get('/movie/:movieId', function(req, res, next) {
+  Movie.findOne({ _id: req.params.movieId })
+  .then(movie => {
+    if(!movie) {
+      return next(httpErrors(404, 'no movie found'));
+    }
+    return res.json(movie)
+  }).catch(err =>  httpErrors(404, err.message));
 });
 
 movieRouter.post('/movie', jsonParser, bearerAuth, function(req, res) {
