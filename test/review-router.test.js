@@ -61,7 +61,7 @@ describe('testing the review router', () => {
   });
 
   describe('testing GET for api/review', () => {
-    let tempUserData;
+    let tempUserData, tempReviewData;
     let testReview1 = {
       movieId: 4567382736,
       title: 'something',
@@ -97,6 +97,7 @@ describe('testing the review router', () => {
         mockUser.createOne()
       ])
         .then(promiseData => {
+          tempReviewData = promiseData[0];
           tempUserData = promiseData[3];
           done();
         })
@@ -119,18 +120,27 @@ describe('testing the review router', () => {
         done();
       })
       .catch(done);
-    })
+    });
 
     it('should return all reviews by movieId, no auth required', (done) => {
       request.get(`${baseURL}/reviews/4567382736`)
         .then(res => {
-          console.log(res.body);
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
           done();
         })
         .catch(done);
     });
+
+    it('should return a single review', (done) => {
+      request.get(`${baseURL}/review/${tempReviewData._id}`)
+        .then(res => {
+          expect(res.status).to.equal(200);
+          expect(res.body._id).to.equal(tempReviewData._id.toString());
+          done();
+        })
+        .catch(done);
+    })
   });
 
   describe('testing PUT for api/review', () => {

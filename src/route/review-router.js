@@ -15,19 +15,29 @@ reviewRouter.get('/reviews', function (req, res, next) {
       if(!reviews) {
         return next(httpErrors(404, 'no reviews found'));
       }
-      res.json(reviews);
+      return res.json(reviews);
     }).catch(err => httpErrors(404, err.message));
 });
 
 // find review model by movie id
 reviewRouter.get('/reviews/:movieId', function (req, res, next) {
-  Review.find({movieId: req.params.movieId})
+  Review.find({ movieId: req.params.movieId })
     .then(reviews => {
       if(!reviews) {
         return next(httpErrors(404, 'no reviews for that id'));
       }
-      res.json(reviews);
+      return res.json(reviews);
     }).catch(err => httpErrors(404, err.message));
+});
+
+reviewRouter.get('/review/:reviewId', function(req, res, next) {
+  Review.findOne({ _id: req.params.reviewId })
+    .then(review => {
+      if(!review) {
+        return next(httpErrors(404, 'no review found'));
+      }
+      return res.json(review)
+    }).catch(err => httpError(404, err.message));
 });
 
 reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
