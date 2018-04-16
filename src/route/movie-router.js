@@ -18,14 +18,22 @@ movieRouter.get('/movies', function(req, res, next) {
     }).catch(err => httpErrors(404, err.message));
 });
 
+// fetch movie by movieId
 movieRouter.get('/movie/:movieId', function(req, res, next) {
   Movie.findOne({ _id: req.params.movieId })
-  .then(movie => {
-    if(!movie) {
-      return next(httpErrors(404, 'no movie found'));
-    }
-    return res.json(movie)
-  }).catch(err =>  httpErrors(404, err.message));
+    .then(movie => {
+      if(!movie) {
+        return next(httpErrors(404, 'no movie found'));
+      }
+      return res.json(movie);
+    }).catch(err =>  httpErrors(404, err.message));
+});
+
+//fetch movie by title
+movieRouter.get('/movie_title/:movieTitle', function(req, res, next) {
+  Movie.findOne({ name: req.params.movieTitle })
+    .then(movie => res.json(movie))
+    .catch(err => httpErrors(404, err.message));
 });
 
 movieRouter.post('/movie', jsonParser, bearerAuth, function(req, res) {

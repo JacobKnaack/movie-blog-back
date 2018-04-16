@@ -108,5 +108,16 @@ describe('testing the movie router', () => {
         })
         .catch(done);
     });
+
+    it('should return a movie by title', (done) => {
+      const movieName = encodeURIComponent(tempMovieData.name);
+      request.get(`${baseURL}/movie_title/${movieName}`)
+        .then(res => {
+          expect(res.status).to.equal(200);
+          expect(res.body.name).to.equal(tempMovieData.name);
+          done();
+        })
+        .catch(done);
+    })
   });
 });
