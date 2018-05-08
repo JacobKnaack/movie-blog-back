@@ -1,7 +1,8 @@
+require('dotenv').config();
 'use strict';
 
 // npm modules
-const {Router} = require('express');
+const { Router } = require('express');
 const jsonParser = require('body-parser').json();
 
 // app modules
@@ -14,9 +15,21 @@ const authRouter = module.exports = new Router();
 authRouter.post('/signup', jsonParser, (req, res, next) => {
   console.log('hit /api/signup');
 
-  Author.create(req.body)
+  if (req.body.np_as && req.body.np_as === process.env.NIT_PICKER_ACCESS_SECRET) {
+    Author.create({
+      username: req.body.username,
+      password: req.body.password,
+      email: req.body.email,
+      isNitPicker: true,
+    })
     .then(token => res.send(token))
     .catch(next);
+  } else {
+    Author.create(req.body)
+      .then(token => res.send(token))
+      .catch(next);
+  }
+
 });
 
 authRouter.get('/login', basicAuth, (req, res, next) => {

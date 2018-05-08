@@ -1,3 +1,4 @@
+require('dotenv').config();
 'use strict';
 
 const API_URL = process.env.API_URL || 'localhost:3000';
@@ -24,6 +25,7 @@ describe('testing auth router', () => {
           username: 'test_user',
           password: 'top secret',
           email: 'test_user@example.lulwat',
+          np_as: process.env.NIT_PICKER_ACCESS_SECRET,
         })
         .then(res => {
           console.log('token we go back ', res.text);
@@ -34,12 +36,11 @@ describe('testing auth router', () => {
   });
 
   describe('testing GET /api/login', () => {
-    it('should respond with a user and a token token', () => {
+    it('should respond with an np user and a token token', () => {
       let tempUser;
-      return mockUser.createOne()
+      return mockUser.createNP()
         .then(userData => {
           tempUser = userData.user;
-          console.log('tempUser', tempUser);
           let encoded = new Buffer(`${tempUser.username}:${userData.password}`).toString('base64');
           return superagent.get(`${API_URL}/api/login`)
             .set('Authorization', `Basic ${encoded}`);

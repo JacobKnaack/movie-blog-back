@@ -9,6 +9,7 @@ const authorSchema = mongoose.Schema({
   passwordHash: {type: String, required: true},
   email: {type: String, required: true, unique: true},
   username: {type: String, required: true, unique: true},
+  isNitPicker: {type: Boolean, required: true, default: false},
   tokenSeed: {type: String, required: true, unique: true},
 });
 
