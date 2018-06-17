@@ -8,6 +8,8 @@ const Movie = require('../model/Movie.js');
 const bearerAuth = require('../lib/bearer-auth-middleware');
 
 const movieRouter = module.exports = new Router();
+
+// fetch all movies
 movieRouter.get('/movies', function(req, res, next) {
   Movie.find({})
     .then(movies => {
