@@ -82,8 +82,8 @@ describe('testing the review router', () => {
     
     let testReview3 = {
       movieId: 81723969871,
-      title:'third',
-      author: 'third',
+      title:'second',
+      author: 'someone',
       html: '<p>this movie is great</p>',
       created_on: new Date(),
       updated_on: new Date,
@@ -131,6 +131,17 @@ describe('testing the review router', () => {
         })
         .catch(done);
     });
+
+    it('should return all review by author name, no auth required', (done) => {
+      request.get(`${baseURL}/reviews/by/someone`)
+        .then(res => {
+          expect(res.status).to.equal(200);
+          expect(res.body.length).to.equal(2);
+          expect(res.body[0].author).to.equal('someone');
+          done();
+        })
+        .catch(done);
+    })
 
     it('should return a single review', (done) => {
       request.get(`${baseURL}/review/${tempReviewData._id}`)
