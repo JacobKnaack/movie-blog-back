@@ -1,9 +1,9 @@
 'use strict';
 
-const Author = require('../../src/model/Author.js');
+const User = require('../../src/model/User.js');
 
 module.exports = () => {
   return Promise.all([
-    Author.remove({}),
+    User.remove({}),
   ]);
 };

@@ -1,6 +1,6 @@
 'use strict';
 
-const Author = require('../model/Author.js');
+const User = require('../model/User.js');
 const httpErrors = require('http-errors')
 
 // basic auth middleware for login route
@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
   if(!username || !password)
     return next(new Error('unauthorized username or password was missing'));
 
-  Author.findOne({username})
+  User.findOne({username})
     .then(user => {
       return user.passwordHashCompare(password);
     })

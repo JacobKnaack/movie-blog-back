@@ -39,19 +39,19 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return a review with a title and author and html', (done) => {
+    it('should return a review with a title, user and html', (done) => {
       request.post(`${baseURL}/review`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: 127635876325,
           title: 'test review',
-          author: 'test author',
+          user: 'test user',
           html: 'What a great experience, I loved this movie so much!!'
         })
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.title).to.equal('test review');
-          expect(res.body.author).to.equal('test author');
+          expect(res.body.user).to.equal('test user');
           expect(res.body.html).to.equal('What a great experience, I loved this movie so much!!');
           expect(res.body.created_on).to.exist;
           done();
@@ -65,7 +65,7 @@ describe('testing the review router', () => {
     let testReview1 = {
       movieId: 4567382736,
       title: 'something',
-      author: 'someone',
+      user: 'someone',
       html: 'stuffs',
       created_on: new Date(),
       updated_on: new Date,
@@ -74,7 +74,7 @@ describe('testing the review router', () => {
     let testReview2 = {
       movieId: 4567382736,
       title: 'stuff',
-      author: 'another dude',
+      user: 'another dude',
       html: 'aasdkfjhsdjhf',
       created_on: new Date(),
       updated_on: new Date(),
@@ -83,7 +83,7 @@ describe('testing the review router', () => {
     let testReview3 = {
       movieId: 81723969871,
       title:'second',
-      author: 'someone',
+      user: 'someone',
       html: '<p>this movie is great</p>',
       created_on: new Date(),
       updated_on: new Date,
@@ -132,12 +132,12 @@ describe('testing the review router', () => {
         .catch(done);
     });
 
-    it('should return all review by author name, no auth required', (done) => {
+    it('should return all review by user name, no auth required', (done) => {
       request.get(`${baseURL}/reviews/by/someone`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
-          expect(res.body[0].author).to.equal('someone');
+          expect(res.body[0].user).to.equal('someone');
           done();
         })
         .catch(done);
@@ -159,7 +159,7 @@ describe('testing the review router', () => {
     let testReview = {
       movieId: 12731298736,
       title: 'test review',
-      author: 'test author',
+      user: 'test user',
       html: 'text content',
       created_on: new Date(),
       updated_on: new Date(),
@@ -191,7 +191,7 @@ describe('testing the review router', () => {
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           title: 'different things',
-          author: 'Perhaps a name change',
+          user: 'Perhaps a name change',
           html: 'I\'ve changed things!'
         })
         .then(res => {
@@ -208,7 +208,7 @@ describe('testing the review router', () => {
     let testReview = {
       movieId: 12731298736,
       title: 'anothrer',
-      author: 'different author',
+      user: 'different user',
       content: 'test content',
       created_on: new Date(),
       updated_on: new Date(),

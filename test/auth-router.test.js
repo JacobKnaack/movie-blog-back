@@ -47,7 +47,7 @@ describe('testing auth router', () => {
         })
         .then(res => {
           expect(res.status).toEqual(200);
-          expect(res.body.author.username).toEqual(tempUser.username);
+          expect(res.body.user.username).toEqual(tempUser.username);
         });
     });
   });

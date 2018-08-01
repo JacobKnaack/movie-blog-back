@@ -1,7 +1,7 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
-const Author = require('../model/Author.js');
+const User = require('../model/User.js');
 const universalify = require('universalify');
 
 module.exports = (req, res, next) => {
@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
   // decrypt the token
   universalify.fromCallback(jwt.verify)(token, process.env.APP_SECRET)
   // find the user by the tokenSeed
-    .then(decoded => Author.findOne({tokenSeed: decoded.tokenSeed}))
+    .then(decoded => User.findOne({tokenSeed: decoded.tokenSeed}))
     .then(user => {
       if(!user)
         throw new Error('unauthorized no user found');

@@ -5,7 +5,7 @@ const crypto = require('crypto'); // for getting random string to be tokenSeed
 const jwt = require('jsonwebtoken'); // for encrypting tokenSeed to create token
 const mongoose = require('mongoose');
 
-const authorSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
   passwordHash: {type: String, required: true},
   email: {type: String, required: true, unique: true},
   username: {type: String, required: true, unique: true},
@@ -13,7 +13,7 @@ const authorSchema = mongoose.Schema({
   tokenSeed: {type: String, required: true, unique: true},
 });
 
-authorSchema.methods.passwordHashCreate = function(password){
+userSchema.methods.passwordHashCreate = function(password){
   return bcrypt.hash(password, 8)
     .then(hash => {
       this.passwordHash = hash;
@@ -21,7 +21,7 @@ authorSchema.methods.passwordHashCreate = function(password){
     });
 };
 
-authorSchema.methods.passwordHashCompare = function(password){
+userSchema.methods.passwordHashCompare = function(password){
   console.log('passwordHashCompare', password);
   return bcrypt.compare(password, this.passwordHash)
     .then(isCorrect => {
@@ -31,7 +31,7 @@ authorSchema.methods.passwordHashCompare = function(password){
     });
 };
 
-authorSchema.methods.tokenSeedCreate = function(){
+userSchema.methods.tokenSeedCreate = function(){
   return new Promise((resolve, reject) => {
     let tries = 1;
 
@@ -52,18 +52,18 @@ authorSchema.methods.tokenSeedCreate = function(){
   });
 };
 
-authorSchema.methods.tokenCreate = function(){
+userSchema.methods.tokenCreate = function(){
   return this.tokenSeedCreate()
     .then(() => {
       return jwt.sign({tokenSeed: this.tokenSeed}, process.env.APP_SECRET);
     });
 };
 
-const Author = module.exports = mongoose.model('author', authorSchema);
+const User = module.exports = mongoose.model('user', userSchema);
 
-Author.create = function(data){
+User.create = function(data){
   let password = data.password;
   delete data.password;
-  return new Author(data).passwordHashCreate(password)
+  return new User(data).passwordHashCreate(password)
     .then(user => user.tokenCreate());
 };

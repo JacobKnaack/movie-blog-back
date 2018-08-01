@@ -42,8 +42,8 @@ reviewRouter.get('/review/:reviewId', function(req, res, next) {
 });
 
 //fetch review by author
-reviewRouter.get('/reviews/by/:author', function(req, res, next) {
-  Review.find({ author: req.params.author })
+reviewRouter.get('/reviews/by/:user', function(req, res, next) {
+  Review.find({ user: req.params.user })
     .then(reviews => {
       if(!reviews) {
         return next(httpErrors(404, 'no reviews found by that author'));
@@ -55,7 +55,7 @@ reviewRouter.get('/reviews/by/:author', function(req, res, next) {
 reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
   new Review({
     movieId: req.body.movieId,
-    author: req.body.author,
+    user: req.body.user,
     title: req.body.title,
     html: req.body.html,
     created_on: new Date(),
@@ -84,7 +84,7 @@ reviewRouter.put('/review/:id', jsonParser, bearerAuth, function(req, res) {
     }).catch(err => httpErrors(404, err.message));
 });
 
-//delete review by author
+//delete review by user
 reviewRouter.delete('/review/:id', bearerAuth, function(req, res) {
   Review.findByIdAndRemove(req.params.id)
     .then(review => {
