@@ -43,7 +43,7 @@ describe('testing the review router', () => {
       request.post(`${baseURL}/review`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
-          movieId: 127635876325,
+          movieId: '127635876325',
           title: 'test review',
           user: 'test user',
           html: 'What a great experience, I loved this movie so much!!'
@@ -63,7 +63,7 @@ describe('testing the review router', () => {
   describe('testing GET for api/review', () => {
     let tempUserData, tempReviewData;
     let testReview1 = {
-      movieId: 4567382736,
+      movieId: '123456789',
       title: 'something',
       user: 'someone',
       html: 'stuffs',
@@ -72,19 +72,19 @@ describe('testing the review router', () => {
     };
 
     let testReview2 = {
-      movieId: 4567382736,
+      movieId: '123456789',
       title: 'stuff',
       user: 'another dude',
       html: 'aasdkfjhsdjhf',
       created_on: new Date(),
       updated_on: new Date(),
     };
-    
+
     let testReview3 = {
-      movieId: 81723969871,
-      title:'second',
+      movieId: '81723969871',
+      title: 'second',
       user: 'someone',
-      html: '<p>this movie is great</p>',
+      html: '<p>this movie is also great great</p>',
       created_on: new Date(),
       updated_on: new Date,
     }
@@ -114,16 +114,16 @@ describe('testing the review router', () => {
 
     it('should return all reviews, no auth requred', (done) => {
       request.get(`${baseURL}/reviews`)
-      .then(res => {
-        expect(res.status).to.equal(200);
-        expect(res.body.length).to.equal(3);
-        done();
-      })
-      .catch(done);
+        .then(res => {
+          expect(res.status).to.equal(200);
+          expect(res.body.length).to.equal(3);
+          done();
+        })
+        .catch(done);
     });
 
     it('should return all reviews by movieId, no auth required', (done) => {
-      request.get(`${baseURL}/reviews/4567382736`)
+      request.get(`${baseURL}/reviews/123456789`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);

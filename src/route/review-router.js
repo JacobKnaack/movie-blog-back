@@ -12,7 +12,7 @@ const reviewRouter = module.exports = new Router();
 reviewRouter.get('/reviews', function (req, res, next) {
   Review.find({})
     .then(reviews => {
-      if(!reviews) {
+      if (!reviews) {
         return next(httpErrors(404, 'no reviews found'));
       }
       return res.json(reviews);
@@ -23,7 +23,7 @@ reviewRouter.get('/reviews', function (req, res, next) {
 reviewRouter.get('/reviews/:movieId', function (req, res, next) {
   Review.find({ movieId: req.params.movieId })
     .then(reviews => {
-      if(!reviews) {
+      if (!reviews) {
         return next(httpErrors(404, 'no reviews for that id'));
       }
       return res.json(reviews);
@@ -31,10 +31,10 @@ reviewRouter.get('/reviews/:movieId', function (req, res, next) {
 });
 
 //fetch review by review id
-reviewRouter.get('/review/:reviewId', function(req, res, next) {
+reviewRouter.get('/review/:reviewId', function (req, res, next) {
   Review.findOne({ _id: req.params.reviewId })
     .then(review => {
-      if(!review) {
+      if (!review) {
         return next(httpErrors(404, 'no review found'));
       }
       return res.json(review)
@@ -42,10 +42,10 @@ reviewRouter.get('/review/:reviewId', function(req, res, next) {
 });
 
 //fetch review by author
-reviewRouter.get('/reviews/by/:user', function(req, res, next) {
+reviewRouter.get('/reviews/by/:user', function (req, res, next) {
   Review.find({ user: req.params.user })
     .then(reviews => {
-      if(!reviews) {
+      if (!reviews) {
         return next(httpErrors(404, 'no reviews found by that author'));
       }
       return res.json(reviews);
@@ -53,21 +53,26 @@ reviewRouter.get('/reviews/by/:user', function(req, res, next) {
 })
 
 reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
+  let creationDate
+  if (req.body.created_on) {
+    creationDate = new Date(req.body.created_on)
+  } else creationDate = new Date()
+
   new Review({
     movieId: req.body.movieId,
     user: req.body.user,
     title: req.body.title,
     html: req.body.html,
-    created_on: new Date(),
+    created_on: creationDate,
     updated_on: new Date(),
   }).save()
     .then(review => res.json(review))
     .catch(err => httpErrors(400, err.message));
 });
 
-reviewRouter.put('/review/:id', jsonParser, bearerAuth, function(req, res) {
+reviewRouter.put('/review/:id', jsonParser, bearerAuth, function (req, res) {
   if (JSON.stringify(req.body) === '{}') return httpErrors(400, 'no body provided');
-  Review.findOne({_id: req.params.id})
+  Review.findOne({ _id: req.params.id })
     .then(review => {
       if (req.body.title) {
         review.title = req.body.title;
@@ -85,7 +90,7 @@ reviewRouter.put('/review/:id', jsonParser, bearerAuth, function(req, res) {
 });
 
 //delete review by user
-reviewRouter.delete('/review/:id', bearerAuth, function(req, res) {
+reviewRouter.delete('/review/:id', bearerAuth, function (req, res) {
   Review.findByIdAndRemove(req.params.id)
     .then(review => {
       res.status(204).send(JSON.stringify(review));

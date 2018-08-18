@@ -21,8 +21,8 @@ describe('testing the movie router', () => {
   after(server.stop);
   afterEach(cleanDB);
 
-  describe('testing POST for api/movie', () => {
-    let testMovie = { 
+  describe('testing POST for api/movies', () => {
+    let testMovie = {
       name: 'test movie1',
       release: new Date(),
       image_path: 'an/image/path',
@@ -45,7 +45,7 @@ describe('testing the movie router', () => {
     });
 
     it('should return a movie', (done) => {
-      request.post(`${baseURL}/movie`)
+      request.post(`${baseURL}/movies`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send(testMovie)
         .then(res => {
@@ -59,7 +59,7 @@ describe('testing the movie router', () => {
   });
 
   describe('testing GET for api/movie, no auth required', () => {
-    let testMovie={
+    let testMovie = {
       name: 'test movie2',
       release: new Date(),
       image_path: 'another/path',

@@ -22,8 +22,8 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
       email: req.body.email,
       isNitPicker: true,
     })
-    .then(token => res.send(token))
-    .catch(next);
+      .then(token => res.send(token))
+      .catch(next);
   } else {
     User.create(req.body)
       .then(token => res.send(token))
