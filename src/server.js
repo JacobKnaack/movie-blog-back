@@ -36,7 +36,7 @@ const server = module.exports = {};
 server.isOn = false;
 server.start = () => {
   return new Promise((resolve, reject) => {
-    if(!server.isOn){
+    if (!server.isOn) {
       server.http = app.listen(PORT, () => {
         server.isOn = true;
         console.log('server up', PORT);
@@ -50,7 +50,7 @@ server.start = () => {
 
 server.stop = () => {
   return new Promise((resolve, reject) => {
-    if(server.http && server.isOn){
+    if (server.http && server.isOn) {
       return server.http.close(() => {
         server.isOn = false;
         console.log('server down');
