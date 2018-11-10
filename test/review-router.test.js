@@ -46,7 +46,8 @@ describe('testing the review router', () => {
           movieId: '127635876325',
           title: 'test review',
           user: 'test user',
-          html: 'What a great experience, I loved this movie so much!!'
+          html: 'What a great experience, I loved this movie so much!!',
+          created_on: "January 1, 2018 00:00:00",
         })
         .then(res => {
           expect(res.status).to.equal(200);

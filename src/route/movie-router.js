@@ -39,15 +39,27 @@ movieRouter.get('/movie_title/:movieTitle', function (req, res, next) {
 });
 
 movieRouter.post('/movies', jsonParser, bearerAuth, function (req, res) {
+  let creationDate = new Date();
+  if (req.body.created_on) {
+    creationDate = new Date(req.body.created_on)
+  }
+
   new Movie({
     name: req.body.name,
     release: req.body.release,
     image_path: req.body.image_path,
-    created_on: new Date(),
+    created_on: creationDate,
   }).save()
     .then(movie => res.json(movie))
     .catch(err => httpErrors(400, err.message));
 });
+
+movieRouter.delete('/movies/removeAll', bearerAuth, function (req, res) {
+  /* 
+  this function will clean the movie field of data,
+  should only be used as a way of wiping data for migrations and systematic schema changes
+  */
+})
 
 movieRouter.removeAllMovies = () => {
   return Movie.remove({});

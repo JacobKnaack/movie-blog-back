@@ -50,13 +50,13 @@ reviewRouter.get('/reviews/by/:user', function (req, res, next) {
       }
       return res.json(reviews);
     }).catch(err => httpErrors(404, err.message));
-})
+});
 
 reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
-  let creationDate
+  let creationDate = new Date();
   if (req.body.created_on) {
-    creationDate = new Date(req.body.created_on)
-  } else creationDate = new Date()
+    creationDate = new Date(req.body.created_on);
+  }
 
   new Review({
     movieId: req.body.movieId,
