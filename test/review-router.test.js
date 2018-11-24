@@ -210,7 +210,7 @@ describe('testing the review router', () => {
       movieId: 12731298736,
       title: 'anothrer',
       user: 'different user',
-      content: 'test content',
+      html: 'test content',
       created_on: new Date(),
       updated_on: new Date(),
     };
