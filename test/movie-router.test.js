@@ -58,7 +58,7 @@ describe('testing the movie router', () => {
     });
   });
 
-  describe('testing GET for api/movie, no auth required', () => {
+  describe('testing GET for api/movies, no auth required', () => {
     let testMovie = {
       name: 'test movie2',
       release: new Date(),

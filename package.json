@@ -4,8 +4,10 @@
   "description": "CMS for posting, fetching and updating reviews. built for a review blog",
   "main": "index.js",
   "scripts": {
-    "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath db.startup.log",
-    "start": "nodemon index.js",
+    "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath ./db/db.startup.log",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "watch": "mocha --watch",
     "test": "mocha",
     "test-rb": "mocha test/reddit-bot.test.js",
     "heroku-start": "node index.js"
@@ -39,7 +41,7 @@
     "chai": "^4.1.1",
     "expect": "^21.1.0",
     "faker": "^4.1.0",
-    "mocha": "^3.5.0",
+    "mocha": "^3.5.3",
     "nodemon": "^1.18.3",
     "superagent": "^3.8.3",
     "superagent-promise-plugin": "^3.2.0",

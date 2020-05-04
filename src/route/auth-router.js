@@ -7,6 +7,7 @@ const jsonParser = require('body-parser').json();
 
 // app modules
 const basicAuth = require('../lib/basic-auth-middleware.js');
+const bearerAuth = require('../lib/bearer-auth-middleware');
 const User = require('../model/User.js');
 
 // module logic
@@ -41,6 +42,18 @@ authRouter.get('/login', basicAuth, (req, res, next) => {
         user: req.user,
         accessToken: token,
       })
+    })
+    .catch(next);
+});
+
+authRouter.patch('/reset', bearerAuth, jsonParser, (req, res, next) => {
+  console.log('hit /api/reset');
+
+  return req.user.passwordReset(req.body.password)
+    .then(() => {
+      res.status(204).send({
+        message: `Successfully update user: ${req.user.username}`,
+      });
     })
     .catch(next);
 });
