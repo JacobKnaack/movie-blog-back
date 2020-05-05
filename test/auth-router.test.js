@@ -18,6 +18,7 @@ describe('Testing the Auth', () => {
   after(server.stop);
   afterEach(cleanDB);
   let tempToken = null;
+  let tempUser = null;
 
   describe('testing POST /api/signup', () => {
     it('should respond with a token', () => {
@@ -38,7 +39,6 @@ describe('Testing the Auth', () => {
 
   describe('testing GET /api/login', () => {
     it('should respond with an np user and a token', () => {
-      let tempUser = null;
 
       return mockUser.createNP()
         .then(userData => {
@@ -58,19 +58,26 @@ describe('Testing the Auth', () => {
   describe('testing PATCH /api/reset/', () => {
     it('should respond with a new token', () => {
 
-
+      let PASS = 'newpassword';
       return mockUser.createNP()
         .then(userData => {
           tempUser = userData.user;
           tempToken = userData.token;
+
           return superagent.patch(`${API_URL}/api/reset`)
             .set('Authorization', `Bearer ${tempToken}`)
-            .send({ password: 'newpassword' })
+            .send({ password: PASS })
         })
         .then(res => {
-          console.log(res.body);
           expect(res.status).toEqual(204);
           // expect(res.body.message.includes(tempUser.username)).toBeTruthy();
+
+          let encoded = new Buffer(`${tempUser.username}:${PASS}`).toString('base64');
+          return superagent.get(`${API_URL}/api/login`)
+            .set('Authorization', `Basic ${encoded}`);
+        })
+        .then(res => {
+          expect(res.status).toEqual(200);
         })
         .catch(err => {
           expect(err).toBe(null);
