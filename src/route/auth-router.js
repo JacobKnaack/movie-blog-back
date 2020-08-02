@@ -33,7 +33,7 @@ authRouter.post('/signup', jsonParser, (req, res, next) => {
 
 });
 
-authRouter.get('/login', basicAuth, (req, res, next) => {
+authRouter.post('/login', basicAuth, (req, res, next) => {
   console.log('hit /api/login');
 
   req.user.tokenCreate()
