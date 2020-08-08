@@ -10,8 +10,6 @@ const reviewRouter = require('./route/review-router');
 const movieRouter = require('./route/movie-router');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());
@@ -29,12 +27,12 @@ app.use(require('./lib/error-middleware.js'));
 const server = module.exports = {};
 server.app = app;
 server.isOn = false;
-server.start = () => {
+server.start = (port) => {
   return new Promise((resolve, reject) => {
     if (!server.isOn) {
-      server.http = app.listen(PORT, () => {
+      server.http = app.listen(port, () => {
         server.isOn = true;
-        console.log('server up', PORT);
+        console.log('server up', port);
         resolve();
       });
       return;
