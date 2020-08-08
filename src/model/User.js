@@ -54,18 +54,33 @@ userSchema.methods.tokenSeedCreate = function () {
 userSchema.methods.tokenCreate = function () {
   return this.tokenSeedCreate()
     .then(() => {
-      return jwt.sign({ tokenSeed: this.tokenSeed }, process.env.APP_SECRET);
+      const token = {
+        id: this._id,
+        tokenSeed: this.tokenSeed,
+        username: this.username,
+        email: this.email,
+      }
+
+      return jwt.sign(token, process.env.APP_SECRET);
     });
 }
 
 userSchema.methods.passwordReset = function (password) {
-  console.log(this);
   return this.passwordHashCreate(password)
     .then(user => user.tokenCreate())
     .catch(err => console.error(err));
 }
 
 const User = module.exports = mongoose.model('user', userSchema);
+
+User.validateToken = function (token) {
+  const validUser = jwt.verify(token, process.env.APP_SECRET);
+  if (validUser) {
+    return validUser;
+  } else {
+    console.error('Invlid Token');
+  }
+}
 
 User.create = function (data) {
   let password = data.password;

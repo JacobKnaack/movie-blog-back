@@ -9,22 +9,23 @@ const httpErrors = require('http-errors')
 // if anything fails next an unauthorized error
 
 module.exports = (req, res, next) => {
-  const {authorization} = req.headers;
+  const { authorization } = req.headers;
 
-  if(!authorization)
-    return next(new Error('unauthorized no authorization provided'));
+  if (!authorization)
+    return next(new Error('no authorization header provided'));
 
-  let encoded = authorization.split('Basic ')[1];
-  if(!encoded)
+  let [type, encoded] = authorization.split(' ');
+  if (!encoded || type.toLowerCase() !== 'basic') {
     return next(new Error('unauthorized no basic auth provided'));
+  }
 
   let decoded = new Buffer(encoded, 'base64').toString();
   let [username, password] = decoded.split(':');
 
-  if(!username || !password)
+  if (!username || !password)
     return next(new Error('unauthorized username or password was missing'));
 
-  User.findOne({username})
+  User.findOne({ username })
     .then(user => {
       return user.passwordHashCompare(password);
     })
@@ -33,7 +34,6 @@ module.exports = (req, res, next) => {
       next();
     })
     .catch(err => {
-      console.log('errrrrrrr', err);
       return next(httpErrors(401, 'this username is not registered'));
     });
 

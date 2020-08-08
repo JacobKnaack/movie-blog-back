@@ -6,10 +6,8 @@
   "scripts": {
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath ./db/db.startup.log",
     "start": "node index.js",
-    "dev": "nodemon index.js",
-    "watch": "mocha --watch",
-    "test": "mocha",
-    "test-rb": "mocha test/reddit-bot.test.js",
+    "watch": "nodemon index.js",
+    "test": "mocha ./src/test",
     "heroku-start": "node index.js"
   },
   "engines": {
@@ -25,26 +23,25 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "bluebird": "^3.5.0",
-    "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
-    "express": "^4.16.3",
+    "express": "^4.17.1",
     "gridfs-stream": "^1.1.1",
     "http-errors": "^1.6.1",
     "jsonwebtoken": "^8.0.1",
-    "mongoose": "^4.11.5",
+    "mongoose": "^5.9.27",
     "morgan": "^1.9.1",
     "snoowrap": "^1.15.2",
     "universalify": "^0.1.1"
   },
   "devDependencies": {
-    "chai": "^4.1.1",
-    "expect": "^21.1.0",
+    "chai": "^4.2.0",
+    "expect": "^26.2.0",
     "faker": "^4.1.0",
-    "mocha": "^3.5.3",
-    "nodemon": "^1.18.3",
+    "mocha": "^8.1.0",
+    "mongodb-memory-server": "^6.6.3",
+    "nodemon": "^2.0.4",
     "superagent": "^3.8.3",
-    "superagent-promise-plugin": "^3.2.0",
-    "superagent-use": "^0.1.0"
+    "supertest": "^4.0.2"
   }
 }

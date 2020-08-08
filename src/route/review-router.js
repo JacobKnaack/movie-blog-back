@@ -1,7 +1,6 @@
 'use strict';
 
 const Router = require('express').Router;
-const jsonParser = require('body-parser').json();
 const httpErrors = require('http-errors');
 
 const Review = require('../model/Review.js');
@@ -52,7 +51,7 @@ reviewRouter.get('/reviews/by/:user', function (req, res, next) {
     }).catch(err => httpErrors(404, err.message));
 });
 
-reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
+reviewRouter.post('/review', bearerAuth, function (req, res) {
   let creationDate = new Date();
   if (req.body.created_on) {
     creationDate = new Date(req.body.created_on);
@@ -70,7 +69,7 @@ reviewRouter.post('/review', jsonParser, bearerAuth, function (req, res) {
     .catch(err => httpErrors(400, err.message));
 });
 
-reviewRouter.put('/review/:id', jsonParser, bearerAuth, function (req, res) {
+reviewRouter.put('/review/:id', bearerAuth, function (req, res) {
   if (JSON.stringify(req.body) === '{}') return httpErrors(400, 'no body provided');
   Review.findOne({ _id: req.params.id })
     .then(review => {
@@ -98,6 +97,7 @@ reviewRouter.delete('/review/:id', bearerAuth, function (req, res) {
     .catch(err => httpErrors(404, err.message));
 });
 
+// for testing purposes only
 reviewRouter.removeAllReviews = () => {
   return Review.remove({});
 };

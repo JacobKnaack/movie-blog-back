@@ -3,7 +3,6 @@ require('dotenv').config();
 
 // npm modules
 const { Router } = require('express');
-const jsonParser = require('body-parser').json();
 
 // app modules
 const basicAuth = require('../lib/basic-auth-middleware.js');
@@ -13,7 +12,7 @@ const User = require('../model/User.js');
 // module logic
 const authRouter = module.exports = new Router();
 
-authRouter.post('/signup', jsonParser, (req, res, next) => {
+authRouter.post('/signup', (req, res, next) => {
   console.log('hit /api/signup');
 
   if (req.body.np_as && req.body.np_as === process.env.NIT_PICKER_ACCESS_SECRET) {
@@ -39,14 +38,13 @@ authRouter.post('/login', basicAuth, (req, res, next) => {
   req.user.tokenCreate()
     .then(token => {
       res.send({
-        user: req.user,
         accessToken: token,
       })
     })
     .catch(next);
 });
 
-authRouter.patch('/reset', bearerAuth, jsonParser, (req, res, next) => {
+authRouter.patch('/reset', bearerAuth, (req, res, next) => {
   console.log('hit /api/reset');
 
   return req.user.passwordReset(req.body.password)

@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect;
-const rb = require('../src/lib/reddit-bot');
+const rb = require('../lib/reddit-bot');
 
 describe('testing the review router', () => {
 

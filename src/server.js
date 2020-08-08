@@ -3,9 +3,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const httpErrors = require('http-errors');
-mongoose.Promise = require('bluebird');
 
 const authRouter = require('./route/auth-router');
 const reviewRouter = require('./route/review-router');
@@ -13,12 +11,8 @@ const movieRouter = require('./route/movie-router');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/db';
 
-mongoose.connect(mongoURI, {
-  useMongoClient: true
-});
-
+app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());
 
@@ -33,6 +27,7 @@ app.all('*', (req, res, next) => {
 app.use(require('./lib/error-middleware.js'));
 
 const server = module.exports = {};
+server.app = app;
 server.isOn = false;
 server.start = () => {
   return new Promise((resolve, reject) => {

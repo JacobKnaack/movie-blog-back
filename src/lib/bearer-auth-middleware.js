@@ -12,9 +12,10 @@ module.exports = (req, res, next) => {
     return next(new Error('unauthorized no auth header'));
 
   // check for a bearer token
-  let token = authorization.split('Bearer ')[1];
-  if (!token)
+  let [type, token] = authorization.split(' ');
+  if (!token || type.toLowerCase() !== 'bearer') {
     return next(new Error('unauthorized no token found'));
+  }
 
   // decrypt the token
   universalify.fromCallback(jwt.verify)(token, process.env.APP_SECRET)
@@ -23,12 +24,10 @@ module.exports = (req, res, next) => {
       return User.findOne({ tokenSeed: decoded.tokenSeed })
     })
     .then(user => {
-      if (!user)
-        // this is a hard stop on our server, can we capture and pass along?
+      if (!user) {
         throw new Error('unauthorized no user found');
-      // add the user to the req object
+      }
       req.user = user;
-      // next
       next();
     })
     .catch(next);

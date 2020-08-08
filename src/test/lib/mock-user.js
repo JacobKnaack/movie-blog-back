@@ -1,7 +1,7 @@
 'use strict';
 
 const faker = require('faker');
-const User = require('../../src/model/User.js');
+const User = require('../../model/User.js');
 
 const mockUser = module.exports = {};
 
@@ -23,7 +23,7 @@ mockUser.createNP = () => {
       return result;
     });
 };
- 
+
 mockUser.createOne = () => {
   let result = {};
   result.password = faker.internet.password();

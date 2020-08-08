@@ -1,26 +1,16 @@
 'use strict';
 
-process.env.MONGO_URI = process.env.mongoURI || 'mongodb://localhost/db';
-
 const expect = require('chai').expect;
-const request = require('superagent-use')(require('superagent'));
-const superPromise = require('superagent-promise-plugin');
+const supertest = require('supertest')
 
-const Review = require('../src/model/Review.js');
-const reviewRouter = require('../src/route/review-router.js');
-const cleanDB = require('./lib/clean-db.js');
+const Review = require('../model/Review.js');
+const reviewRouter = require('../route/review-router.js');
 const mockUser = require('./lib/mock-user.js');
 
-const PORT = process.env.PORT || 3000;
-const baseURL = `localhost:${PORT}/api`;
-const server = require('../src/server.js');
-request.use(superPromise);
+const server = require('../server.js');
+const request = supertest(server.app);
 
 describe('testing the review router', () => {
-  before(server.start);
-  after(server.stop);
-  afterEach(cleanDB);
-
   describe('testing POST for api/review', () => {
     let tempUserData;
 
@@ -40,7 +30,7 @@ describe('testing the review router', () => {
     });
 
     it('should return a review with a title, user and html', (done) => {
-      request.post(`${baseURL}/review`)
+      request.post(`/api/review`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: '127635876325',
@@ -114,7 +104,7 @@ describe('testing the review router', () => {
     });
 
     it('should return all reviews, no auth requred', (done) => {
-      request.get(`${baseURL}/reviews`)
+      request.get(`/api/reviews`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(3);
@@ -124,7 +114,7 @@ describe('testing the review router', () => {
     });
 
     it('should return all reviews by movieId, no auth required', (done) => {
-      request.get(`${baseURL}/reviews/123456789`)
+      request.get(`/api/reviews/123456789`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
@@ -134,7 +124,7 @@ describe('testing the review router', () => {
     });
 
     it('should return all review by user name, no auth required', (done) => {
-      request.get(`${baseURL}/reviews/by/someone`)
+      request.get(`/api/reviews/by/someone`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
@@ -145,7 +135,7 @@ describe('testing the review router', () => {
     })
 
     it('should return a single review', (done) => {
-      request.get(`${baseURL}/review/${tempReviewData._id}`)
+      request.get(`/api/review/${tempReviewData._id}`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body._id).to.equal(tempReviewData._id.toString());
@@ -188,7 +178,7 @@ describe('testing the review router', () => {
     });
 
     it('should return a review with updated content', (done) => {
-      request.put(`${baseURL}/review/${tempReviewData._id}`)
+      request.put(`/api/review/${tempReviewData._id}`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           title: 'different things',
@@ -237,7 +227,7 @@ describe('testing the review router', () => {
     });
 
     it('should remove a review', (done) => {
-      request.delete(`${baseURL}/review/${tempReviewData._id}`)
+      request.delete(`/api/review/${tempReviewData._id}`)
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .then(res => {
           expect(res.status).to.equal(204);

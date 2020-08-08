@@ -1,26 +1,16 @@
 'use strict';
 
-process.env.MONGO_URI = process.env.mongoURI || 'mongodb://localhost/db';
-
+require('dotenv').config('../../.env');
 const expect = require('chai').expect;
-const request = require('superagent-use')(require('superagent'));
-const superPromise = require('superagent-promise-plugin');
+const supertest = require('supertest');
 
-const Movie = require('../src/model/Movie.js');
+const Movie = require('../model/Movie.js');
 const mockUser = require('./lib/mock-user.js');
-const cleanDB = require('./lib/clean-db.js');
-const movieRouter = require('../src/route/movie-router.js');
 
-const PORT = process.env.PORT || 3000;
-const baseURL = `localhost:${PORT}/api`;
-const server = require('../src/server.js');
-request.use(superPromise);
+const server = require('../server.js');
+const request = supertest(server.app);
 
 describe('testing the movie router', () => {
-  before(server.start);
-  after(server.stop);
-  afterEach(cleanDB);
-
   describe('testing POST for api/movies', () => {
     let testMovie = {
       name: 'test movie1',
@@ -29,32 +19,22 @@ describe('testing the movie router', () => {
     };
     let tempUserData;
 
-    before(() => {
-      return mockUser.createOne()
+    it('should return a movie', () => {
+      return mockUser.createNP()
         .then(userData => {
           tempUserData = userData;
-        });
-    });
-
-    afterEach((done) => {
-      Promise.all([
-        movieRouter.removeAllMovies()
-      ])
-        .then(() => done())
-        .catch(done);
-    });
-
-    it('should return a movie', (done) => {
-      request.post(`${baseURL}/movies`)
-        .set('Authorization', `Bearer ${tempUserData.token}`)
-        .send(testMovie)
-        .then(res => {
-          expect(res.status).to.equal(200);
-          expect(res.body.name).to.equal('test movie1');
-          expect(res.body.image_path).to.equal('an/image/path');
-          done();
+          return request.post('/api/movies')
+            .set('Authorization', `Bearer ${tempUserData.token}`)
+            .send(testMovie)
+            .then(res => {
+              expect(res.status).to.equal(200);
+              expect(res.body.name).to.equal('test movie1');
+              expect(res.body.image_path).to.equal('an/image/path');
+            });
         })
-        .catch(done);
+        .catch(error => {
+          console.log(error);
+        });
     });
   });
 
@@ -80,27 +60,19 @@ describe('testing the movie router', () => {
         .catch(done);
     });
 
-    after((done) => {
-      Promise.all([
-        movieRouter.removeAllMovies()
-      ])
-        .then(() => done())
-        .catch(done);
-    });
-
     it('should return all movies', (done) => {
-      request.get(`${baseURL}/movies`)
+      request.get('/api/movies')
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(1);
-          expect(res.body[0].name).to.equal('test movie2');
+          expect(res.body.length).to.equal(2);
+          expect(res.body[1].name).to.equal('test movie2');
           done();
         })
         .catch(done);
     });
 
     it('should return a movie by id', (done) => {
-      request.get(`${baseURL}/movie/${tempMovieData._id}`)
+      request.get(`/api/movie/${tempMovieData._id}`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body._id).to.equal(tempMovieData._id.toString());
@@ -111,7 +83,7 @@ describe('testing the movie router', () => {
 
     it('should return a movie by title', (done) => {
       const movieName = encodeURIComponent(tempMovieData.name);
-      request.get(`${baseURL}/movie_title/${movieName}`)
+      request.get(`/api/movie_title/${movieName}`)
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.name).to.equal(tempMovieData.name);

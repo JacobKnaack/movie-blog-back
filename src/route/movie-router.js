@@ -1,7 +1,6 @@
 'use strict';
 
 const Router = require('express').Router;
-const jsonParser = require('body-parser').json();
 const httpErrors = require('http-errors');
 
 const Movie = require('../model/Movie.js');
@@ -38,7 +37,7 @@ movieRouter.get('/movie_title/:movieTitle', function (req, res, next) {
     .catch(err => httpErrors(404, err.message));
 });
 
-movieRouter.post('/movies', jsonParser, bearerAuth, function (req, res) {
+movieRouter.post('/movies', bearerAuth, function (req, res) {
   let creationDate = new Date();
   if (req.body.created_on) {
     creationDate = new Date(req.body.created_on)
