@@ -1,5 +1,7 @@
 # Movie Blog Backend
 
+![badge](https://action-badges.now.sh/JacobKnaack/movie-blog-back)
+
 A server for a movie review blog
 
 * built with nodejs / express / mongodb
