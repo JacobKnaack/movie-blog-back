@@ -1,7 +1,7 @@
 'use strict';
 
 const User = require('../model/User.js');
-const httpErrors = require('http-errors')
+const httpErrors = require('http-errors');
 
 // basic auth middleware for login route
 // find a user in db and compare the password
@@ -33,7 +33,7 @@ module.exports = (req, res, next) => {
       req.user = user;
       next();
     })
-    .catch(err => {
+    .catch(() => {
       return next(httpErrors(401, 'this username is not registered'));
     });
 

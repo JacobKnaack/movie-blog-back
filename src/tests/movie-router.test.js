@@ -45,7 +45,7 @@ describe('testing the movie router', () => {
       image_path: 'another/path',
       created_on: new Date(),
     };
-    let tempUserData, tempMovieData;
+    let tempMovieData;
 
     before((done) => {
       Promise.all([
@@ -54,7 +54,6 @@ describe('testing the movie router', () => {
       ])
         .then(promiseData => {
           tempMovieData = promiseData[0];
-          tempUserData = promiseData[1];
           done();
         })
         .catch(done);
@@ -90,6 +89,6 @@ describe('testing the movie router', () => {
           done();
         })
         .catch(done);
-    })
+    });
   });
 });

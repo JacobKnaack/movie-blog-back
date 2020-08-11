@@ -7,7 +7,9 @@
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath ./db/db.startup.log",
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "test": "mocha ./src/test",
+    "test": "mocha ./src/tests",
+    "test:watch": "mocha -w ./src/tests",
+    "lint": "eslint ./src/**/*.js",
     "heroku-start": "node index.js"
   },
   "engines": {
@@ -36,12 +38,12 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^7.6.0",
     "expect": "^26.2.0",
     "faker": "^4.1.0",
     "mocha": "^8.1.0",
     "mongodb-memory-server": "^6.6.3",
     "nodemon": "^2.0.4",
-    "superagent": "^3.8.3",
     "supertest": "^4.0.2"
   }
 }

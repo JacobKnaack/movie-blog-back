@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
 // load app modules
 const server = require('../server.js');
 const mockUser = require('./lib/mock-user.js');
-const mockdb = require('./lib/mock-db.js');
 const request = supertest(server.app);
 
 describe('Testing the Auth', () => {
@@ -64,7 +63,7 @@ describe('Testing the Auth', () => {
 
           return request.patch('/api/reset')
             .set('Authorization', `Bearer ${tempToken}`)
-            .send({ password: PASS })
+            .send({ password: PASS });
         })
         .then(res => {
           expect(res.status).toEqual(204);
@@ -77,6 +76,15 @@ describe('Testing the Auth', () => {
         })
         .catch(err => {
           expect(err).toBe(null);
+        });
+    });
+  });
+
+  describe('testing non-existent route', () => {
+    it('should respond with a 404', () => {
+      request.get('/no-route')
+        .then(res => {
+          expect(res.status).toBe(404);
         });
     });
   });

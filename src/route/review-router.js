@@ -7,9 +7,10 @@ const Review = require('../model/Review.js');
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
 const reviewRouter = module.exports = new Router();
+
 // fetch all saved reviews
 reviewRouter.get('/reviews', function (req, res, next) {
-  Review.find({})
+  Review.find({}, null, { limit: 15 })
     .then(reviews => {
       if (!reviews) {
         return next(httpErrors(404, 'no reviews found'));
@@ -36,7 +37,7 @@ reviewRouter.get('/review/:reviewId', function (req, res, next) {
       if (!review) {
         return next(httpErrors(404, 'no review found'));
       }
-      return res.json(review)
+      return res.json(review);
     }).catch(err => httpErrors(404, err.message));
 });
 

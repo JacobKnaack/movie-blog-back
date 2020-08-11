@@ -3,8 +3,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const httpErrors = require('http-errors');
 
+const errorHandler = require('./lib/error-middleware');
 const authRouter = require('./route/auth-router');
 const reviewRouter = require('./route/review-router');
 const movieRouter = require('./route/movie-router');
@@ -19,10 +19,10 @@ app.use('/api', reviewRouter);
 app.use('/api', movieRouter);
 
 app.all('*', (req, res, next) => {
-  next(httpErrors(404, 'this route is not registered'));
+  next(errorHandler('notFound')(res, 'this route is not registered'));
 });
 
-app.use(require('./lib/error-middleware.js'));
+app.use(errorHandler());
 
 const server = module.exports = {};
 server.app = app;

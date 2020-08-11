@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect;
-const supertest = require('supertest')
+const supertest = require('supertest');
 
 const Review = require('../model/Review.js');
 const reviewRouter = require('../route/review-router.js');
@@ -30,14 +30,14 @@ describe('testing the review router', () => {
     });
 
     it('should return a review with a title, user and html', (done) => {
-      request.post(`/api/review`)
+      request.post('/api/review')
         .set('Authorization', `Bearer ${tempUserData.token}`)
         .send({
           movieId: '127635876325',
           title: 'test review',
           user: 'test user',
           html: 'What a great experience, I loved this movie so much!!',
-          created_on: "January 1, 2018 00:00:00",
+          created_on: 'January 1, 2018 00:00:00',
         })
         .then(res => {
           expect(res.status).to.equal(200);
@@ -52,7 +52,7 @@ describe('testing the review router', () => {
   });
 
   describe('testing GET for api/review', () => {
-    let tempUserData, tempReviewData;
+    let tempReviewData;
     let testReview1 = {
       movieId: '123456789',
       title: 'something',
@@ -78,7 +78,7 @@ describe('testing the review router', () => {
       html: '<p>this movie is also great great</p>',
       created_on: new Date(),
       updated_on: new Date,
-    }
+    };
 
     before((done) => {
       Promise.all([
@@ -89,7 +89,6 @@ describe('testing the review router', () => {
       ])
         .then(promiseData => {
           tempReviewData = promiseData[0];
-          tempUserData = promiseData[3];
           done();
         })
         .catch(done);
@@ -104,7 +103,7 @@ describe('testing the review router', () => {
     });
 
     it('should return all reviews, no auth requred', (done) => {
-      request.get(`/api/reviews`)
+      request.get('/api/reviews')
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(3);
@@ -114,7 +113,7 @@ describe('testing the review router', () => {
     });
 
     it('should return all reviews by movieId, no auth required', (done) => {
-      request.get(`/api/reviews/123456789`)
+      request.get('/api/reviews/123456789')
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
@@ -124,7 +123,7 @@ describe('testing the review router', () => {
     });
 
     it('should return all review by user name, no auth required', (done) => {
-      request.get(`/api/reviews/by/someone`)
+      request.get('/api/reviews/by/someone')
         .then(res => {
           expect(res.status).to.equal(200);
           expect(res.body.length).to.equal(2);
@@ -132,7 +131,7 @@ describe('testing the review router', () => {
           done();
         })
         .catch(done);
-    })
+    });
 
     it('should return a single review', (done) => {
       request.get(`/api/review/${tempReviewData._id}`)
@@ -142,7 +141,7 @@ describe('testing the review router', () => {
           done();
         })
         .catch(done);
-    })
+    });
   });
 
   describe('testing PUT for api/review', () => {
