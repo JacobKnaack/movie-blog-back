@@ -1,7 +1,7 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
-const User = require('../model/User.js');
+const User = require('../model/user/schema.js');
 const universalify = require('universalify');
 
 module.exports = (req, res, next) => {
@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
   universalify.fromCallback(jwt.verify)(token, process.env.APP_SECRET)
     // find the user by the tokenSeed
     .then(decoded => {
-      return User.findOne({ tokenSeed: decoded.tokenSeed })
+      return User.findOne({ tokenSeed: decoded.tokenSeed });
     })
     .then(user => {
       if (!user) {
@@ -31,6 +31,4 @@ module.exports = (req, res, next) => {
       next();
     })
     .catch(next);
-
-
 };

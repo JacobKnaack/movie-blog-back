@@ -19,7 +19,7 @@ userSchema.methods.passwordHashCreate = function (password) {
       this.passwordHash = hash;
       return this;
     });
-}
+};
 
 userSchema.methods.passwordHashCompare = function (password) {
   return bcrypt.compare(password, this.passwordHash)
@@ -49,7 +49,7 @@ userSchema.methods.tokenSeedCreate = function () {
 
     _tokenSeedCreate();
   });
-}
+};
 
 userSchema.methods.tokenCreate = function () {
   return this.tokenSeedCreate()
@@ -59,17 +59,17 @@ userSchema.methods.tokenCreate = function () {
         tokenSeed: this.tokenSeed,
         username: this.username,
         email: this.email,
-      }
+      };
 
       return jwt.sign(token, process.env.APP_SECRET);
     });
-}
+};
 
 userSchema.methods.passwordReset = function (password) {
   return this.passwordHashCreate(password)
     .then(user => user.tokenCreate())
     .catch(err => console.error(err));
-}
+};
 
 const User = module.exports = mongoose.model('user', userSchema);
 
@@ -80,7 +80,7 @@ User.validateToken = function (token) {
   } else {
     console.error('Invlid Token');
   }
-}
+};
 
 User.create = function (data) {
   let password = data.password;
@@ -88,4 +88,4 @@ User.create = function (data) {
   return new User(data).passwordHashCreate(password)
     .then(user => user.tokenCreate())
     .catch(err => console.error(err));
-}
+};

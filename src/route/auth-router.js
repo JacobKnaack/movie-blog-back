@@ -7,7 +7,7 @@ const { Router } = require('express');
 // app modules
 const basicAuth = require('../lib/basic-auth-middleware.js');
 const bearerAuth = require('../lib/bearer-auth-middleware');
-const User = require('../model/User.js');
+const User = require('../model/user/schema.js');
 
 // module logic
 const authRouter = module.exports = new Router();
@@ -39,7 +39,7 @@ authRouter.post('/login', basicAuth, (req, res, next) => {
     .then(token => {
       res.send({
         accessToken: token,
-      })
+      });
     })
     .catch(next);
 });

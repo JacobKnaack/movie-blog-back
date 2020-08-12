@@ -1,7 +1,7 @@
 'use strict';
 
 const faker = require('faker');
-const User = require('../../model/User.js');
+const User = require('../../model/user/schema.js');
 
 const mockUser = module.exports = {};
 

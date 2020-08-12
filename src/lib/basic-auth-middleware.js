@@ -1,6 +1,6 @@
 'use strict';
 
-const User = require('../model/User.js');
+const User = require('../model/user/schema.js');
 const httpErrors = require('http-errors');
 
 // basic auth middleware for login route

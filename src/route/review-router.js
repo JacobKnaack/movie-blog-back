@@ -2,21 +2,24 @@
 
 const Router = require('express').Router;
 const httpErrors = require('http-errors');
+const errorHandler = require('../lib/error-middleware.js');
 
-const Review = require('../model/Review.js');
+const Review = require('../model/review/schema.js');
 const bearerAuth = require('../lib/bearer-auth-middleware.js');
 
+const reviewController = require('../model/review/controller.js');
 const reviewRouter = module.exports = new Router();
 
 // fetch all saved reviews
 reviewRouter.get('/reviews', function (req, res, next) {
-  Review.find({}, null, { limit: 15 })
+  const { page } = req.query;
+  reviewController.fetch(page)
     .then(reviews => {
       if (!reviews) {
         return next(httpErrors(404, 'no reviews found'));
       }
       return res.json(reviews);
-    }).catch(err => httpErrors(404, err.message));
+    }).catch(err => next(httpErrors(404, err.message)));
 });
 
 // find review model by movie id
@@ -27,7 +30,7 @@ reviewRouter.get('/reviews/:movieId', function (req, res, next) {
         return next(httpErrors(404, 'no reviews for that id'));
       }
       return res.json(reviews);
-    }).catch(err => httpErrors(404, err.message));
+    }).catch(err => next(httpErrors(404, err.message)));
 });
 
 //fetch review by review id
@@ -53,40 +56,18 @@ reviewRouter.get('/reviews/by/:user', function (req, res, next) {
 });
 
 reviewRouter.post('/review', bearerAuth, function (req, res) {
-  let creationDate = new Date();
-  if (req.body.created_on) {
-    creationDate = new Date(req.body.created_on);
-  }
-
-  new Review({
-    movieId: req.body.movieId,
-    user: req.body.user,
-    title: req.body.title,
-    html: req.body.html,
-    created_on: creationDate,
-    updated_on: new Date(),
-  }).save()
+  let data = req.body;
+  reviewController.create(data)
     .then(review => res.json(review))
     .catch(err => httpErrors(400, err.message));
 });
 
-reviewRouter.put('/review/:id', bearerAuth, function (req, res) {
+reviewRouter.patch('/review/:id', bearerAuth, function (req, res, next) {
   if (JSON.stringify(req.body) === '{}') return httpErrors(400, 'no body provided');
-  Review.findOne({ _id: req.params.id })
-    .then(review => {
-      if (req.body.title) {
-        review.title = req.body.title;
-      }
-      if (req.body.author) {
-        review.author = req.body.author;
-      }
-      if (req.body.html) {
-        review.html = req.body.html;
-      }
-      review.updated_on = new Date();
-      review.save();
-      res.json(review);
-    }).catch(err => httpErrors(404, err.message));
+
+  reviewController.updateById(req.params.id, req.body)
+    .then(review => res.json(review))
+    .catch(err => next(errorHandler(err.message)));
 });
 
 //delete review by user

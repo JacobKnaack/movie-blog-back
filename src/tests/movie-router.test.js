@@ -4,7 +4,7 @@ require('dotenv').config('../../.env');
 const expect = require('chai').expect;
 const supertest = require('supertest');
 
-const Movie = require('../model/Movie.js');
+const Movie = require('../model/movie/schema.js');
 const mockUser = require('./lib/mock-user.js');
 
 const server = require('../server.js');
