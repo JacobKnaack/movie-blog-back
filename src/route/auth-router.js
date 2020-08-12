@@ -13,7 +13,6 @@ const User = require('../model/user/schema.js');
 const authRouter = module.exports = new Router();
 
 authRouter.post('/signup', (req, res, next) => {
-  console.log('hit /api/signup');
 
   if (req.body.np_as && req.body.np_as === process.env.NIT_PICKER_ACCESS_SECRET) {
     User.create({
@@ -33,7 +32,6 @@ authRouter.post('/signup', (req, res, next) => {
 });
 
 authRouter.post('/login', basicAuth, (req, res, next) => {
-  console.log('hit /api/login');
 
   req.user.tokenCreate()
     .then(token => {
@@ -45,7 +43,6 @@ authRouter.post('/login', basicAuth, (req, res, next) => {
 });
 
 authRouter.patch('/reset', bearerAuth, (req, res, next) => {
-  console.log('hit /api/reset');
 
   return req.user.passwordReset(req.body.password)
     .then(() => {

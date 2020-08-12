@@ -10,6 +10,7 @@ const reviewRouter = require('./route/review-router');
 const movieRouter = require('./route/movie-router');
 
 const app = express();
+app.use(express.static('public'));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());

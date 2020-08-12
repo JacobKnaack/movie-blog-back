@@ -24,7 +24,8 @@ reviewRouter.get('/reviews', function (req, res, next) {
 
 // find review model by movie id
 reviewRouter.get('/reviews/:movieId', function (req, res, next) {
-  Review.find({ movieId: req.params.movieId })
+  // Review.find({ movieId: req.params.movieId })
+  reviewController.fetchByMovieId(req.params.movieId)
     .then(reviews => {
       if (!reviews) {
         return next(httpErrors(404, 'no reviews for that id'));
@@ -34,8 +35,8 @@ reviewRouter.get('/reviews/:movieId', function (req, res, next) {
 });
 
 //fetch review by review id
-reviewRouter.get('/review/:reviewId', function (req, res, next) {
-  Review.findOne({ _id: req.params.reviewId })
+reviewRouter.get('/review/:id', function (req, res, next) {
+  reviewController.fetchById(req.params.id)
     .then(review => {
       if (!review) {
         return next(httpErrors(404, 'no review found'));
@@ -46,7 +47,7 @@ reviewRouter.get('/review/:reviewId', function (req, res, next) {
 
 //fetch review by author
 reviewRouter.get('/reviews/by/:user', function (req, res, next) {
-  Review.find({ user: req.params.user })
+  reviewController.fetchByUser(req.params.user)
     .then(reviews => {
       if (!reviews) {
         return next(httpErrors(404, 'no reviews found by that author'));
@@ -81,5 +82,5 @@ reviewRouter.delete('/review/:id', bearerAuth, function (req, res) {
 
 // for testing purposes only
 reviewRouter.removeAllReviews = () => {
-  return Review.remove({});
+  return Review.deleteMany({});
 };

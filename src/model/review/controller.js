@@ -12,7 +12,6 @@ exports.fetch = (page) => {
   return Review.find({}, null, options);
 };
 
-
 exports.create = (data) => {
   let creationDate = data.created_on ? new Date(data.created_on) : new Date();
 
@@ -24,6 +23,18 @@ exports.create = (data) => {
     created_on: creationDate,
     updated_on: new Date(),
   }).save();
+};
+
+exports.fetchById = (id) => {
+  return Review.findOne({ _id: id });
+};
+
+exports.fetchByMovieId = (id) => {
+  return Review.find({ movieId: id });
+};
+
+exports.fetchByUser = (user) => {
+  return Review.find({ user });
 };
 
 exports.updateById = (id, data) => {

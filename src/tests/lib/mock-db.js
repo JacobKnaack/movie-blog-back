@@ -13,7 +13,8 @@ module.exports = {
           mongoose.connect(uri, {
             useNewUrlParser: true,
             useCreateIndex: true,
-            useUnifiedTopology: true
+            useUnifiedTopology: true,
+            useFindAndModify: false
           });
         } catch (e) {
           console.log(e);

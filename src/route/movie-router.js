@@ -54,5 +54,5 @@ movieRouter.post('/movies', bearerAuth, function (req, res, next) {
 });
 
 movieRouter.removeAllMovies = () => {
-  return Movie.remove({});
+  return Movie.deleteMany({});
 };

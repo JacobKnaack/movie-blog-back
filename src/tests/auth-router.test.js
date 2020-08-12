@@ -40,7 +40,7 @@ describe('Testing the Auth', () => {
         .then(userData => {
           tempUser = userData.user;
           tempToken = userData.token;
-          let encoded = new Buffer(`${tempUser.username}:${userData.password}`).toString('base64');
+          let encoded = Buffer.from(`${tempUser.username}:${userData.password}`).toString('base64');
           return request.post('/api/login')
             .set('Authorization', `Basic ${encoded}`);
         })
@@ -67,7 +67,7 @@ describe('Testing the Auth', () => {
         })
         .then(res => {
           expect(res.status).toEqual(204);
-          let encoded = new Buffer(`${tempUser.username}:${PASS}`).toString('base64');
+          let encoded = Buffer.from(`${tempUser.username}:${PASS}`).toString('base64');
           return request.post('/api/login')
             .set('Authorization', `Basic ${encoded}`);
         })

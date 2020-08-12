@@ -1,6 +1,12 @@
+
+<span style="text-align: center">
+
 # Movie Blog Backend
 
 ![badge](https://action-badges.now.sh/JacobKnaack/movie-blog-back)
+![Heroku](https://heroku-badge.herokuapp.com/?app=movie-blog-backend)
+
+</span>
 
 A server for a movie review blog
 
@@ -15,7 +21,11 @@ This library requires Node JS and MongoDB in order to function.
 
 ## Authorization
 
+Authorization is handled using basic string based authentication and bearer token based resource requests authentication.
+
 In order to make resource generating requests (POST / PUT / PATCH / DELETE), you must attach have a token.
+
+see /login and /signup if you would like to obtain a token.
 
 ### Token Generation
 

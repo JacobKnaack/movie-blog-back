@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
     return next(new Error('unauthorized no basic auth provided'));
   }
 
-  let decoded = new Buffer(encoded, 'base64').toString();
+  let decoded = Buffer.from(encoded, 'base64').toString();
   let [username, password] = decoded.split(':');
 
   if (!username || !password)
