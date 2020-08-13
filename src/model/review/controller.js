@@ -7,9 +7,14 @@ exports.fetch = (page) => {
     limit: 15,
   };
   if (page) {
-    options['skip'] = options.limit * parseInt(page - 1);
+    options['skip'] = options.limit * (page - 1);
   }
-  return Review.find({}, null, options);
+  return Review.find({}, null, options)
+    .then(reviews => ({
+      count: reviews.length,
+      results: reviews,
+      next: page + 1 || 2,
+    }));
 };
 
 exports.create = (data) => {
@@ -33,8 +38,19 @@ exports.fetchByMovieId = (id) => {
   return Review.find({ movieId: id });
 };
 
-exports.fetchByUser = (user) => {
-  return Review.find({ user });
+exports.fetchByUser = (user, page) => {
+  let options = {
+    limit: 15,
+  };
+  if (page) {
+    options['skip'] = options.limit * (page - 1);
+  }
+  return Review.find({ user }, null, options)
+    .then(reviews => ({
+      count: reviews.length,
+      results: reviews,
+      next: page + 1 || 2,
+    }));
 };
 
 exports.updateById = (id, data) => {

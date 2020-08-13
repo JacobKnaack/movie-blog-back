@@ -52,7 +52,7 @@ describe('testing the review router', () => {
     });
   });
 
-  describe('testing GET for api/review', () => {
+  describe('testing GET for api/reviews', () => {
     let tempReviewData;
     let testReviews = createReviews.byNumber(30);
     let movieMatch1 = createReviews.byParams({ movieId: '00000001' });
@@ -87,7 +87,8 @@ describe('testing the review router', () => {
       request.get('/api/reviews')
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(15);
+          expect(res.body.count).to.equal(15);
+          expect(res.body.next).to.equal(2);
           done();
         })
         .catch(done);
@@ -97,7 +98,8 @@ describe('testing the review router', () => {
       request.get('/api/reviews?page=2')
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(15);
+          expect(res.body.count).to.equal(15);
+          expect(res.body.next).to.equal(3);
           done();
         })
         .catch(err => {
@@ -106,11 +108,11 @@ describe('testing the review router', () => {
         });
     });
 
-    it('shoulde return the final page of reviews', (done) => {
+    it('should return the final page of reviews', (done) => {
       request.get('/api/reviews?page=3')
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(4);
+          expect(res.body.count).to.equal(4);
           done();
         })
         .catch(err => {
@@ -133,8 +135,8 @@ describe('testing the review router', () => {
       request.get(`/api/reviews/by/${userMatch1.user}`)
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(2);
-          expect(res.body[0].user).to.equal('someone');
+          expect(res.body.count).to.equal(2);
+          expect(res.body.results[0].user).to.equal('someone');
           done();
         })
         .catch(done);

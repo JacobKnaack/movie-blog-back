@@ -12,7 +12,10 @@ describe('testing the review router', () => {
           expect(data).to.be.an('array');
           done();
         })
-        .catch(done);
+        .catch((err) => {
+          console.log(err);
+          done();
+        });
     });
   });
 });

@@ -12,7 +12,7 @@ const reviewRouter = module.exports = new Router();
 
 // fetch all saved reviews
 reviewRouter.get('/reviews', function (req, res, next) {
-  const { page } = req.query;
+  const page = parseInt(req.query.page);
   reviewController.fetch(page)
     .then(reviews => {
       if (!reviews) {
@@ -42,7 +42,7 @@ reviewRouter.get('/review/:id', function (req, res, next) {
         return next(httpErrors(404, 'no review found'));
       }
       return res.json(review);
-    }).catch(err => httpErrors(404, err.message));
+    }).catch(err => next(httpErrors(404, err.message)));
 });
 
 //fetch review by author
@@ -53,14 +53,14 @@ reviewRouter.get('/reviews/by/:user', function (req, res, next) {
         return next(httpErrors(404, 'no reviews found by that author'));
       }
       return res.json(reviews);
-    }).catch(err => httpErrors(404, err.message));
+    }).catch(err => next(httpErrors(404, err.message)));
 });
 
-reviewRouter.post('/review', bearerAuth, function (req, res) {
+reviewRouter.post('/review', bearerAuth, function (req, res, next) {
   let data = req.body;
   reviewController.create(data)
     .then(review => res.json(review))
-    .catch(err => httpErrors(400, err.message));
+    .catch(err => next(httpErrors(400, err.message)));
 });
 
 reviewRouter.patch('/review/:id', bearerAuth, function (req, res, next) {
@@ -72,12 +72,12 @@ reviewRouter.patch('/review/:id', bearerAuth, function (req, res, next) {
 });
 
 //delete review by user
-reviewRouter.delete('/review/:id', bearerAuth, function (req, res) {
+reviewRouter.delete('/review/:id', bearerAuth, function (req, res, next) {
   Review.findByIdAndRemove(req.params.id)
     .then(review => {
       res.status(204).send(JSON.stringify(review));
     })
-    .catch(err => httpErrors(404, err.message));
+    .catch(err => next(httpErrors(404, err.message)));
 });
 
 // for testing purposes only
