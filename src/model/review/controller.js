@@ -12,7 +12,7 @@ exports.fetch = (page, limit) => {
     .then(reviews => ({
       count: reviews.length,
       results: reviews,
-      next: reviews.length > options.limit ? page + 1 || 2 : null,
+      next: reviews.length < options.limit ? null : page + 1 || 2,
     }));
 };
 
@@ -48,7 +48,7 @@ exports.fetchByUser = (user, page) => {
     .then(reviews => ({
       count: reviews.length,
       results: reviews,
-      next: reviews.length > options.limit ? page + 1 || 2 : null,
+      next: reviews.length < options.limit ? null : page + 1 || 2,
     }));
 };
 
