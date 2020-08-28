@@ -5,12 +5,12 @@ const User = require('../../model/user/schema.js');
 
 const mockUser = module.exports = {};
 
-mockUser.createNP = () => {
+mockUser.createNP = (args = {}) => {
   let result = {};
   result.password = faker.internet.password();
   return new User({
-    username: faker.internet.userName(),
-    email: faker.internet.email(),
+    username: args.username || faker.internet.userName(),
+    email: args.email || faker.internet.email(),
     isNitPicker: true,
   })
     .passwordHashCreate(result.password)
@@ -24,12 +24,12 @@ mockUser.createNP = () => {
     });
 };
 
-mockUser.createOne = () => {
+mockUser.createOne = (args = {}) => {
   let result = {};
   result.password = faker.internet.password();
   return new User({
-    username: faker.internet.userName(),
-    email: faker.internet.email(),
+    username: args.username || faker.internet.userName(),
+    email: args.email || faker.internet.email(),
   })
     .passwordHashCreate(result.password)
     .then(user => {

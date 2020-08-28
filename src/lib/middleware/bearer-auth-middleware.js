@@ -1,7 +1,7 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
-const User = require('../model/user/schema.js');
+const User = require('../../model/user/schema.js');
 const universalify = require('universalify');
 
 module.exports = (req, res, next) => {

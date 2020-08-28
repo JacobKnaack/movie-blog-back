@@ -1,4 +1,4 @@
-const errorHandler = require('../lib/error-middleware.js')();
+const errorHandler = require('../lib/middleware/error-middleware.js')();
 const { expect } = require('chai');
 
 describe('Testing error middleware', () => {

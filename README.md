@@ -31,6 +31,11 @@ see /login and /signup if you would like to obtain a token.
 
 Tokens are created using string based authentication.
 
+1) There is no public signup process,  this mus be handled by server admin
+2) Login follows standard basic Auth process
+   1) header should include `{Authorization: 'Basic <BASE_64_ENCRYPTED_CREDENTIALS>'}`
+3) Serve will respons with `Bearer` token for use in authenticated requests 
+
 ## Endpoints
 
 ### /api
@@ -46,3 +51,9 @@ These routes interface directly with the applications resources:
 Fetches movies resources that are associated by user and a parent of `reviews`
 
 #### /reviews
+
+## Reddit Bot
+
+- Includes a library that can interface with the reddit API for automated events.
+  - POSTing reviews should be able to create an approriate post on a subreddit of users choice.
+  - Credentials should be available for community engagement on the reddit platform.

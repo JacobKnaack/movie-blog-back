@@ -7,7 +7,7 @@ const supertest = require('supertest');
 const jwt = require('jsonwebtoken');
 
 // load app modules
-const server = require('../server.js');
+const server = require('../lib/server.js');
 const mockUser = require('./lib/mock-user.js');
 const request = supertest(server.app);
 

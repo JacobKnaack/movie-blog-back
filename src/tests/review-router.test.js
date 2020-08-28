@@ -1,14 +1,18 @@
 'use strict';
 
 const expect = require('chai').expect;
+const faker = require('faker');
 const supertest = require('supertest');
 
 const Review = require('../model/review/schema.js');
+const Movie = require('../model/movie/schema.js');
 const reviewRouter = require('../route/review-router.js');
 const mockUser = require('./lib/mock-user.js');
 const createReviews = require('./lib/create-reviews.js');
+const createMovies = require('./lib/create-movies.js');
 
-const server = require('../server.js');
+const server = require('../lib/server.js');
+const movieRouter = require('../route/movie-router.js');
 const request = supertest(server.app);
 
 describe('testing the review router', () => {
@@ -31,45 +35,59 @@ describe('testing the review router', () => {
     });
 
     it('should return a review with a title, user and html', (done) => {
-      request.post('/api/review')
-        .set('Authorization', `Bearer ${tempUserData.token}`)
-        .send({
-          movieId: '127635876325',
-          title: 'test review',
-          user: 'test user',
-          html: 'What a great experience, I loved this movie so much!!',
-          created_on: 'January 1, 2018 00:00:00',
-        })
-        .then(res => {
-          expect(res.status).to.equal(200);
-          expect(res.body.title).to.equal('test review');
-          expect(res.body.user).to.equal('test user');
-          expect(res.body.html).to.equal('What a great experience, I loved this movie so much!!');
-          expect(res.body.created_on).to.exist;
-          done();
-        })
-        .catch(done);
+      new Movie({
+        name: faker.random.word(),
+        release: faker.date.past(),
+        image_path: faker.internet.url(),
+        created_on: new Date(),
+      })
+        .save()
+        .then(movie => {
+          request.post('/api/review')
+            .set('Authorization', `Bearer ${tempUserData.token}`)
+            .send({
+              movieId: movie._id,
+              title: 'test review',
+              user: 'test user',
+              html: 'What a great experience, I loved this movie so much!!',
+              created_on: 'January 1, 2018 00:00:00',
+            })
+            .then(res => {
+              expect(res.status).to.equal(200);
+              expect(res.body.title).to.equal('test review');
+              expect(res.body.user).to.equal('test user');
+              expect(res.body.html).to.equal('What a great experience, I loved this movie so much!!');
+              expect(res.body.created_on).to.be.a('string');
+              done();
+            })
+            .catch(done);
+        });
     });
+
   });
 
   describe('testing GET for api/reviews', () => {
-    let tempReviewData;
-    let testReviews = createReviews.byNumber(30);
-    let movieMatch1 = createReviews.byParams({ movieId: '00000001' });
-    let movieMatch2 = createReviews.byParams({ movieId: '00000001' });
-    let userMatch1 = createReviews.byParams({ user: 'someone' });
-    let userMatch2 = createReviews.byParams({ user: 'someone' });
-    testReviews = [...testReviews, movieMatch1, movieMatch2, userMatch1, userMatch2];
+    let tempReviewData = [], tempMovieData = [], userMatch1 = null;
 
     before((done) => {
-
-      let promises = testReviews.map(review => new Review(review).save());
       Promise.all([
-        ...promises,
-        mockUser.createOne()
+        ...createMovies.byNumber(2).map(data => new Movie(data).save()),
       ])
         .then(promiseData => {
-          tempReviewData = promiseData[0];
+          tempMovieData = [...promiseData];
+          tempMovieData.forEach(movie => {
+            tempReviewData = [
+              ...tempReviewData,
+              ...createReviews.byNumber(movie._id, 15),
+              createReviews.byParams(movie._id, { user: 'someone' })
+            ];
+          });
+          tempReviewData = tempReviewData.map(data => new Review(data).save());
+          return Promise.all([...tempReviewData]);
+        })
+        .then(reviewData => {
+          tempReviewData = reviewData[0];
+          userMatch1 = reviewData[15];
           done();
         })
         .catch(done);
@@ -77,7 +95,8 @@ describe('testing the review router', () => {
 
     after((done) => {
       Promise.all([
-        reviewRouter.removeAllReviews()
+        reviewRouter.removeAllReviews(),
+        movieRouter.removeAllMovies(),
       ])
         .then(() => done())
         .catch(done);
@@ -89,9 +108,26 @@ describe('testing the review router', () => {
           expect(res.status).to.equal(200);
           expect(res.body.count).to.equal(15);
           expect(res.body.next).to.equal(2);
+          expect(res.body.results[0].movieData).to.be.a('object');
           done();
         })
         .catch(done);
+    });
+
+    it('should return a number of reviews specified in a url query', (done) => {
+
+      let limit = 10;
+      request.get(`/api/reviews?limit=${limit}`)
+        .then(res => {
+          expect(res.status).to.equal(200);
+          expect(res.body.count).to.equal(limit);
+          expect(res.body.results).to.be.a('array');
+          done();
+        })
+        .catch(err => {
+          console.log(err);
+          done();
+        });
     });
 
     it('should return the next page of reviews', (done) => {
@@ -100,6 +136,7 @@ describe('testing the review router', () => {
           expect(res.status).to.equal(200);
           expect(res.body.count).to.equal(15);
           expect(res.body.next).to.equal(3);
+          expect(res.body.results).to.be.a('array');
           done();
         })
         .catch(err => {
@@ -112,7 +149,8 @@ describe('testing the review router', () => {
       request.get('/api/reviews?page=3')
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.count).to.equal(4);
+          expect(res.body.count).to.equal(2);
+          expect(res.body.results).to.be.a('array');
           done();
         })
         .catch(err => {
@@ -122,10 +160,10 @@ describe('testing the review router', () => {
     });
 
     it('should return all reviews by movieId, no auth required', (done) => {
-      request.get(`/api/reviews/${movieMatch1.movieId}`)
+      request.get(`/api/reviews/${tempReviewData.movieId}`)
         .then(res => {
           expect(res.status).to.equal(200);
-          expect(res.body.length).to.equal(2);
+          expect(res.body.length).to.equal(16);
           done();
         })
         .catch(done);
@@ -154,24 +192,20 @@ describe('testing the review router', () => {
   });
 
   describe('testing PUT for api/review', () => {
-    let tempUserData, tempReviewData;
-    let testReview = {
-      movieId: 12731298736,
-      title: 'test review',
-      user: 'test user',
-      html: 'text content',
-      created_on: new Date(),
-      updated_on: new Date(),
-    };
+    let tempUserData, tempMovieData, tempReviewData;
 
     before(done => {
       Promise.all([
-        new Review(testReview).save(),
-        mockUser.createOne()
+        new Movie(createMovies.byNumber(1)[0]).save(),
+        mockUser.createOne(),
       ])
         .then(promiseData => {
-          tempReviewData = promiseData[0];
+          tempMovieData = promiseData[0];
           tempUserData = promiseData[1];
+          return new Review(createReviews.byParams(tempMovieData._id, { user: 'test user' })).save();
+        })
+        .then(reviewData => {
+          tempReviewData = reviewData;
           done();
         })
         .catch(done);
@@ -179,7 +213,8 @@ describe('testing the review router', () => {
 
     afterEach((done) => {
       Promise.all([
-        reviewRouter.removeAllReviews()
+        reviewRouter.removeAllReviews(),
+        movieRouter.removeAllMovies(),
       ])
         .then(() => done())
         .catch(done);
@@ -205,24 +240,20 @@ describe('testing the review router', () => {
   });
 
   describe('testing DELETE for api/review', () => {
-    let tempUserData, tempReviewData;
-    let testReview = {
-      movieId: 12731298736,
-      title: 'anothrer',
-      user: 'different user',
-      html: 'test content',
-      created_on: new Date(),
-      updated_on: new Date(),
-    };
+    let tempUserData, tempMovieData, tempReviewData;
 
     before((done) => {
       Promise.all([
-        new Review(testReview).save(),
+        new Movie(createMovies.byNumber(1)[0]).save(),
         mockUser.createOne()
       ])
         .then(promiseData => {
-          tempReviewData = promiseData[0];
+          tempMovieData = promiseData[0];
           tempUserData = promiseData[1];
+          return new Review(createReviews.byParams(tempMovieData._id, { title: 'Remove me' })).save();
+        })
+        .then(reviewData => {
+          tempReviewData = reviewData;
           done();
         })
         .catch(done);

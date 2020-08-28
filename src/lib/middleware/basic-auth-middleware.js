@@ -1,7 +1,7 @@
 'use strict';
 
-const User = require('../model/user/schema.js');
-const httpErrors = require('http-errors');
+const User = require('../../model/user/schema.js');
+const handleErrors = require('./error-middleware.js');
 
 // basic auth middleware for login route
 // find a user in db and compare the password
@@ -34,7 +34,8 @@ module.exports = (req, res, next) => {
       next();
     })
     .catch(() => {
-      return next(httpErrors(401, 'this username is not registered'));
+
+      return next(handleErrors('unauthorized')(res, 'Username / Password not registered'));
     });
 
 };

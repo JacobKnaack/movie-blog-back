@@ -2,10 +2,10 @@
 
 const Router = require('express').Router;
 const httpErrors = require('http-errors');
-const errorHandler = require('../lib/error-middleware.js');
+const errorHandler = require('../lib/middleware/error-middleware.js');
 
 const Review = require('../model/review/schema.js');
-const bearerAuth = require('../lib/bearer-auth-middleware.js');
+const bearerAuth = require('../lib/middleware/bearer-auth-middleware.js');
 
 const reviewController = require('../model/review/controller.js');
 const reviewRouter = module.exports = new Router();
@@ -13,12 +13,13 @@ const reviewRouter = module.exports = new Router();
 // fetch all saved reviews
 reviewRouter.get('/reviews', function (req, res, next) {
   const page = parseInt(req.query.page);
-  reviewController.fetch(page)
-    .then(reviews => {
-      if (!reviews) {
+  const limit = parseInt(req.query.limit);
+  reviewController.fetch(page, limit)
+    .then(reviewData => {
+      if (!reviewData) {
         return next(httpErrors(404, 'no reviews found'));
       }
-      return res.json(reviews);
+      return res.json(reviewData);
     }).catch(err => next(httpErrors(404, err.message)));
 });
 

@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "prestart": "pgrep mongod || mongod --dbpath db --fork --logpath ./db/db.startup.log",
+    "prewatch": "pgrep mongod || mongod --dbpath db --fork --logpath ./db/db.startup.log",
     "start": "node index.js",
-    "watch": "nodemon index.js",
+    "watch": "NODE_ENV=development nodemon index.js",
     "test": "mocha ./src/tests",
     "test:watch": "mocha -w ./src/tests",
     "lint": "eslint ./src/**/*.js",
@@ -24,7 +25,6 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "bluebird": "^3.5.0",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
     "express": "^4.17.1",

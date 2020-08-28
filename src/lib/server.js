@@ -4,10 +4,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 
-const errorHandler = require('./lib/error-middleware');
-const authRouter = require('./route/auth-router');
-const reviewRouter = require('./route/review-router');
-const movieRouter = require('./route/movie-router');
+const errorHandler = require('./middleware/error-middleware');
+const authRouter = require('../route/auth-router');
+const reviewRouter = require('../route/review-router');
+const movieRouter = require('../route/movie-router');
 
 const app = express();
 app.use(express.static('public'));

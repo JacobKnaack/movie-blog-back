@@ -3,13 +3,13 @@
 const faker = require('faker');
 
 /**
- * Factory for creating 'num' reviews
+ * Factory for creating 'num' reviews, requires a movieId for movie foreign key.
  */
-exports.byNumber = (num) => {
+exports.byNumber = (movieId = null, num = 0) => {
   let reviews = [];
   for (let i = num; i > 0; i--) {
     reviews.push({
-      movieId: faker.random.uuid(),
+      movieId,
       title: faker.random.words(),
       user: faker.name.firstName(),
       html: faker.lorem.paragraphs(),
@@ -25,12 +25,12 @@ exports.byNumber = (num) => {
  * @param {*} user 
  */
 
-exports.byParams = (args) => {
+exports.byParams = (movieId = null, args = {}) => {
   return {
-    movieId: args.movieId || faker.random.uuid(),
-    title: faker.random.words(),
+    movieId: movieId || args.movieId,
+    title: args.title || faker.random.words(),
     user: args.user || faker.name.firstName(),
-    html: faker.lorem.paragraphs(),
+    html: args.html || faker.lorem.paragraphs(),
     created_on: new Date(),
     updated_on: new Date(),
   };

@@ -7,7 +7,7 @@ const supertest = require('supertest');
 const Movie = require('../model/movie/schema.js');
 const mockUser = require('./lib/mock-user.js');
 
-const server = require('../server.js');
+const server = require('../lib/server.js');
 const request = supertest(server.app);
 
 describe('testing the movie router', () => {

@@ -4,12 +4,16 @@ const Router = require('express').Router;
 const httpErrors = require('http-errors');
 
 const Movie = require('../model/movie/schema.js');
-const bearerAuth = require('../lib/bearer-auth-middleware');
+const movieController = require('../model/movie/controller.js');
+const bearerAuth = require('../lib/middleware/bearer-auth-middleware.js');
 
 const movieRouter = module.exports = new Router();
 
-// fetch all movies
+// default fetch, for now fetches all movies, query limiting??
 movieRouter.get('/movies', function (req, res, next) {
+  // const page = parseInt(req.query.page);
+  // const limit = parseInt(req.query.limit);
+  // movieController.fetch(page, limit)
   Movie.find({})
     .then(movies => {
       if (!movies) {
@@ -38,17 +42,7 @@ movieRouter.get('/movie_title/:movieTitle', function (req, res, next) {
 });
 
 movieRouter.post('/movies', bearerAuth, function (req, res, next) {
-  let creationDate = new Date();
-  if (req.body.created_on) {
-    creationDate = new Date(req.body.created_on);
-  }
-
-  new Movie({
-    name: req.body.name,
-    release: req.body.release,
-    image_path: req.body.image_path,
-    created_on: creationDate,
-  }).save()
+  movieController.create(req.body)
     .then(movie => res.json(movie))
     .catch(err => next(httpErrors(400, err.message)));
 });

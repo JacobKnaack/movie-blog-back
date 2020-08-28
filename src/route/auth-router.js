@@ -5,8 +5,8 @@ require('dotenv').config();
 const { Router } = require('express');
 
 // app modules
-const basicAuth = require('../lib/basic-auth-middleware.js');
-const bearerAuth = require('../lib/bearer-auth-middleware');
+const basicAuth = require('../lib/middleware/basic-auth-middleware.js');
+const bearerAuth = require('../lib/middleware/bearer-auth-middleware.js');
 const User = require('../model/user/schema.js');
 
 // module logic
